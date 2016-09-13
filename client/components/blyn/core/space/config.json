@@ -1,0 +1,82 @@
+{
+	"type": "nut.core",
+	"permits": {
+		"spaceAdmin": {
+			"alias": "space admin"
+		},
+		"spaceManager": {
+			"alias": "space member"
+		},
+		"spaceCustomer": {
+			"alias": "space customer"
+		}
+	},
+	"accessRolePermits": {
+		"allow.apply": {
+			"name": "allow.apply"
+		},
+		"allow.join": {
+			"name": "allow.join"
+		},
+		"allow.approve.auto": {
+			"name": "allow.approve.auto"
+		}
+	},
+	"types": {
+		"normal": {
+			"name": "normal",
+			"alias": "普通机构",
+			"description": "普通机构",
+			"roles": [
+				{
+					"name": "admin"
+				},
+				{
+					"name": "member"
+				},
+				{
+					"name": "public",
+					"grants": {
+						"member": "allow.apply"
+					}
+				}
+			],
+			"apps": [
+				"weMember"
+			]
+		},
+		"agent.finance.com": {
+			"name": "agent.finance.com",
+			"alias": "金融服务机构",
+			"description": "专注于金融服务的公司",
+			"roles": [
+				"admin"
+			],
+			"apps": [
+				"financeAgent"
+			]
+		},
+		"data.finance.com": {
+			"name": "data.finance.com",
+			"alias": "金融数据服务机构",
+			"description": "专注于提供准确，全面，快速的金融数据",
+			"roles": [
+				"admin"
+			],
+			"apps": [
+				"financeData"
+			]
+		},
+		"assessment.property.com": {
+			"name": "assessment.property.com",
+			"alias": "资产评估机构",
+			"description": "专注于提供权威的，全面的，及时的资产评估数据和报告",
+			"roles": [
+				"admin"
+			],
+			"apps": [
+				"propertyAssessment"
+			]
+		}
+	}
+}
