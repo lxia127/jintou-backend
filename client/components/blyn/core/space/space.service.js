@@ -4,6 +4,7 @@
 
 	function SpaceService($resource, User, $q, Util, BApp, $rootScope, BRole, BCircle, $http) {
 		var safeCb = Util.safeCb;
+		var current = {};
 		var resSpace = $resource('/api/spaces/:id/:controller', {
 			id: '@_id'
 		}, {
@@ -337,9 +338,24 @@
 				}).$promise;
 		}
 
-		service.setCurrent = function (space) {
-			return currentSpace = space;
+		service.setCurrent = function (spaceData) {
+			var that = this;
+			//return currentSpace = space;
+			return this.loadConfig().then(function(){
+				return that.loadSpace(spaceData);
+			})
 		};
+
+		service.loadSpace = function(spaceData){
+			return this.find(spaceData).then(function(space){
+				current = space;
+				return $q.when(space);
+			})
+		}
+
+		service.getCurrent = function(){
+			return current;
+		}
 
 		service.current = function (callback) {
 			if (arguments.length === 0) {
@@ -392,7 +408,7 @@
 
 		service.find = function (findData) {
 
-			console.log('in find space: ');
+			//console.log('in find space: ');
 
 			if ((angular.isNumber(findData) && findData > 0) || (parseInt(findData) && parseInt(findData) > 0)) {
 				return resSpace.get({
@@ -517,6 +533,35 @@
 				joinStatus: ['applying', 'following']
 			}).$promise;
 		}
+
+		service.loadConfig = function () {
+            var that = this;
+            return $http.get("components/blyn/core/space/config.json").then(function (oConfig) {
+                current.config = oConfig.data;
+
+                return $q.when(current.config);
+
+            })
+        }
+
+        service.getConfig = function (path) {
+            var config = current.config;
+            var list = path.splite('.');
+            var o = config;
+            var error = false;
+            list.forEach(function (s) {
+                if (o[s]) {
+                    o = o[s];
+                } else {
+                    error = true;
+                }
+            })
+            if (error) {
+                return config;
+            } else {
+                return o;
+            }
+        }
 
 		return service;
 	}
