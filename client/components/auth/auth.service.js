@@ -31,12 +31,17 @@
           .then(res => {
             $cookies.put('token', res.data.token);
             currentUser = User.get();
-
             var user = currentUser.$promise;
-
             return user;
           })
+          .then(function (user) {
+            return BSpace.initUserSpaces(user);
+          })
+          .then(function () {
+            return BUser.setCurrent();
+          })/*
           .then(user => {
+            $rootScope.$broadcast("auth:login", { user: user });
             //set current user
             $rootScope.current.user = user;
             return BSpace.getUserSpaces({
@@ -45,15 +50,21 @@
             }).then(spaces => {
               //set current space
               $rootScope.current.space = spaces[0];
-              return BApp.find('appEngine').then(app => {
-                //set current app
-                $rootScope.current.app = app;
-                return null;
+              return $q.when(spaces[0]);
+            })
+              .then(function (space) {
+                return BApp.find('appEngine').then(app => {
+                  //set current app
+                  $rootScope.current.app = app;
+                  return $q.when(app);
+                });
+              }).then(function () {
+                return BSpace.setCurrent($rootScope.current.space);
+              })
+              .then(function () {
+                return user;
               });
-            }).then(function () {
-              return user;
-            });
-          })
+          })*/
           .then(user => {
             safeCb(callback)(null, user);
             return user;
@@ -84,18 +95,16 @@
         return $http.post('/api/users', userData).then(function (res) {
           $cookies.put('token', res.data.token);
           currentUser = User.get();
-
           var user = currentUser.$promise;
-
           return user;
-
         })
-        .then(user => {
+          .then(user => {
+            $rootScope.$broadcast("auth:createUser", { user: user });
             //set current user
             $rootScope.current.user = user;
             return BSpace.getUserSpaces({
               userId: user._id,
-              type: 'space.personal'
+              //type: 'person.mycube'
             }).then(spaces => {
               //set current space
               $rootScope.current.space = spaces[0];
@@ -131,9 +140,9 @@
             return newUser;
           });
         })*/.then(user => {
-          safeCb(callback)(null, user);
-          return user;
-        })
+            safeCb(callback)(null, user);
+            return user;
+          })
           .catch(err => {
             Auth.logout();
             safeCb(callback)(err.data);

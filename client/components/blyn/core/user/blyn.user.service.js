@@ -89,6 +89,8 @@
                 })
                 .then(function () {
                     return that.loadMySpaces()
+                }).then(function(){
+                    return $q.when(current);
                 })
         }
 
@@ -96,6 +98,7 @@
         var loadMe = function () {
             return resUser.me().$promise.then(function (user) {
                 current = user;
+                $rootScope.current.user = user;
                 return $q.when(user);
             });
         }
@@ -104,6 +107,15 @@
         var loadMySpaces = function () {
             return resSpace.getUserSpaces().$promise.then(function (spaces) {
                 current.spaces = spaces;
+                var space = spaces[0];
+                $rootScope.current.space = spaces[0];
+                var apps = space.space;
+                apps.forEach(function (app) {
+                    if (app.name.toLocaleLowerCase() === 'appengine') {
+                        $rootScope.current.app = app;
+                    }
+                })
+
                 return $q.when(spaces);
             })
         }

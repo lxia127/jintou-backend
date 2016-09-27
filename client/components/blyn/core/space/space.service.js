@@ -34,6 +34,22 @@
 						controller: 'joinable',
 					},
 					isArray: true
+				},
+				batchAddUserSpace: {
+					method: 'POST',
+					params: {
+						id: 'user',
+						controller: 'batchadd'
+					},
+					isArray: true
+				},
+				batchJoinUserSpace: {
+					method: 'POST',
+					params: {
+						id: 'user',
+						controller: 'batchjoin'
+					},
+					isArray: true
 				}
 			});
 
@@ -341,19 +357,19 @@
 		service.setCurrent = function (spaceData) {
 			var that = this;
 			//return currentSpace = space;
-			return this.loadConfig().then(function(){
+			return this.loadConfig().then(function () {
 				return that.loadSpace(spaceData);
 			})
 		};
 
-		service.loadSpace = function(spaceData){
-			return this.find(spaceData).then(function(space){
+		service.loadSpace = function (spaceData) {
+			return this.find(spaceData).then(function (space) {
 				current = space;
 				return $q.when(space);
 			})
 		}
 
-		service.getCurrent = function(){
+		service.getCurrent = function () {
 			return current;
 		}
 
@@ -563,7 +579,36 @@
             }
         }
 
-		return service;
+		service.initUserSpaces = function (user) {
+			var configUserSpaces = this.getConfig('userSpaces');
+			var uLogin = user.loginId;
+
+			if (uLogin === 'admin@myCube.com') {
+				var createDataList = configUserSpaces[uLogin]['create'];
+				return this.batchAddUserSpace(createDataList);
+			} else {
+				var result = /@myCube.com$/.test(uLogin);
+				var joinDataList = configUserSpaces['*@myCube.com'];
+				if (result) {
+					return this.batchJoinUserSpace(joinDataList);
+				} else {
+					var joinDataList = configUserSpaces['other'];
+					return this.batchJoinUserSpace(joinDataList);
+				}
+			}
+		}
+
+		service.batchAddUserSpace = function (listSpaceData) {
+			return resSpace.batchAddUserSpace({
+				spaces: listSpaceData
+			}).$promise;
+		}
+
+		service.batchJoinUserSpace = function (listSpaceData) {
+			return resSpace.batchJoinUserSpace({
+				spaces: listSpaceData
+			}).$promise;
+		}
 	}
 
 

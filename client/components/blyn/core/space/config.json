@@ -48,7 +48,7 @@
 				"spaceMember"
 			]
 		},
-		"com.myCube":{
+		"com.myCube": {
 			"name": "com.myCube",
 			"alias": "我立方机构",
 			"description": "管理我立方平台的机构",
@@ -73,7 +73,7 @@
 				"spaceMember,spaceProduct,spaceFinance,spaceTrade"
 			]
 		},
-		"person.myCube":{
+		"person.myCube": {
 			"name": "person.myCube",
 			"alias": "我立方个人空间",
 			"description": "我立方平台的个人空间",
@@ -88,23 +88,27 @@
 			]
 		}
 	},
-	"userSpaces":{
-		"admin@myCube.com":{
+	"userSpaces": {
+		"admin@myCube.com": {
 			"create": [
 				{
-					"name":"myCube.com",
-					"alias":"我立方机构",
-					"type":"myCube"
+					"name": "myCube.com",
+					"alias": "我立方机构",
+					"type": "myCube"
 				}
 			]
 		},
-		"*@myCube.com":{
-			"join": "myCube.com",
-			"as": "member"
-		},
-		"other":{
-			"join": "myCube.com",
-			"as": "client"
-		}
+		"*@myCube.com": [
+			{
+				"join": "myCube.com",
+				"as": "member"
+			}
+		],
+		"other": [
+			{
+				"join": "myCube.com",
+				"as": "client"
+			}
+		]
 	}
 }
