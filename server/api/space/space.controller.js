@@ -398,7 +398,7 @@ export function findUserSpaces(req, res) {
         Space.belongsTo(Category, { as: 'type' });
         //console.log(1);
         Space.hasMany(Role, { as: 'roles', foreignKey: 'spaceId' });
-        Space.hasMany(UserRole, { as: 'userRoles'});
+        Space.hasMany(UserRole, { as: 'userRoles' });
         //console.log(2);
         Role.belongsToMany(User, { through: 'UserRole', as: 'users' });
         //console.log(3);
@@ -435,11 +435,11 @@ export function findUserSpaces(req, res) {
         var joinStatus = ['joined'];
         if (req.query.joinStatus) {
             //console.log('joinStatus', joinStatus);
-            if(typeof req.query.joinStatus === 'array'){
+            if (typeof req.query.joinStatus === 'array') {
                 joinStatus = req.query.joinStatus;
             }
-            if(typeof req.query.joinStatus === 'string'){
-                if(!joinStatus.includes(req.query.joinStatus)){
+            if (typeof req.query.joinStatus === 'string') {
+                if (!joinStatus.includes(req.query.joinStatus)) {
                     joinStatus.push(req.query.joinStatus);
                 }
             }
@@ -548,15 +548,22 @@ export function userJoin(req, res) {
     var spaceId = req.body.spaceId;
     var userId = req.body.userId;
     var joinStatus = 'applying';
+    var joinRole = 'member';
     //  console.log("User " + userId + " request to join space " + spaceId);
 
     if (req.body.joinStatus) {
-        var jStatus = req.body.joinStatus;
-        if (['applying', 'following', 'joined'].includes(jStatus)) {
-            joinStatus = jStatus;
-        }
+        var joinStatus = req.body.joinStatus;
     }
 
+    if (req.body.joinRole) {
+        var joinRole = req.body.joinRole;
+    }
+
+    return Space.addUserSpace(userId, spaceId, joinRole, joinStatus)
+        .then(respondWithResult(res))
+        .catch(handleError(res));
+
+    /*
     return Role.add({
         spaceId: spaceId,
         name: "member"
@@ -576,7 +583,7 @@ export function userJoin(req, res) {
             return Promise.resolve(entity);
         }).then(respondWithResult(res))
             .catch(handleError(res));
-    })
+    })*/
 }
 
 

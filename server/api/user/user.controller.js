@@ -107,7 +107,60 @@ export function create(req, res, next) {
   return newUser.save()
     .then(function (user) {
       newUser = user;
-      return Space.addUserSpace(user);
+      var mySpaceData = {
+        type: 'person.normal',
+        name: 'mySpace_' + newUser.loginId,
+        alias: 'mySpace from ' + newUser.loginId,
+        apps: [
+          {
+            "name": "appEngine",
+            "alias": "appEngine",
+            "type": "app.core",
+            "cores": {
+              "role": {
+                "grants": {
+                  "admin": "adminSpaceRole|设置机构角色,adminUserRole|设置用户角色",
+                  "everyone": "myRole|我的角色"
+                }
+              },
+              "space": {
+                "grants": {
+                  "admin": [
+                    {
+                      "name": "adminSpace",
+                      "alias": "机构设置"
+                    },
+                    {
+                      "name": "appStore",
+                      "alias": "应用商店"
+                    }
+                  ]
+                }
+              },
+              "circle": {
+                "grants": {
+                  "admin": ["adminCircle|设置机构圈"],
+                  "manager": ["manageCircle|管理机构圈"],
+                  "everyone": ["circleMember|机构圈主页"]
+                }
+              }
+            }
+          },
+          {
+            "name": "userApp",
+            "alias": "user app",
+            "type": "app.core",
+            "cores": {
+              "user": {
+                "grants": {
+                  "admin": "myProfile,myFinance,myTrade"
+                }
+              }
+            }
+          }
+        ]
+      }
+      return Space.addUserSpace(user, mySpaceData, 'admin', 'joined');
     }).then(function () {
       var token = jwt.sign({ _id: newUser._id }, config.secrets.session, {
         expiresIn: 60 * 60 * 5
