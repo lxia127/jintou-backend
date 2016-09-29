@@ -550,10 +550,40 @@
 			}).$promise;
 		}
 
-		service.loadConfig = function () {
+		service.loadConfig = function (isCombined = true) {
             var that = this;
             return $http.get("components/blyn/core/space/config.json").then(function (oConfig) {
                 current.config = oConfig.data;
+				if(isCombined){
+					return $http.get("components/blyn/core/app/config.json").then(function(oConfig){
+						var appConfig = oConfig.data;
+						var spaceConfig = current.config;
+						angular.forEach(spaceConfig.types,function(sType, tKey){
+							var apps = sType.apps;
+							var rApps = [];
+							angular.forEach(appConfig.apps,function(oConfig,key){
+								apps.forEach(function(appName,index){
+									if(appName === key){
+										oConfig.name = key;
+										rApps.push(oConfig);
+									}
+								})
+							})
+							sType.apps = rApps;
+							spaceConfig[tKey] = sType;
+						})
+						angular.forEach(spaceConfig.userSpaces.users, function(userData, index){
+							angular.forEach(spaceConfig.types, function(oType, key){
+								if(userData.spaceData.type === key){
+									userData.spaceData.type = oType;
+								}
+								spaceConfig['userSpaces']['users'][index] = userData;
+							})
+						})
+						current.config = spaceConfig
+						return $q.when(current.config);
+					})
+				}
 
                 return $q.when(current.config);
 
@@ -613,17 +643,6 @@
 			return resSpace.batchJoinUserSpace({
 				spaces: listSpaceData
 			}).$promise;
-		}
-
-		expendSpaceData = function(spaceData){
-			var spaceConfig, appConfig;
-			service.getConfig().then(function(config){
-				spaceConfig = config;
-				return $http.get("").then(function(config){
-					appConfig = config;
-					
-				})
-			})
 		}
 
 		return service;
