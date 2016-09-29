@@ -581,7 +581,12 @@
 
 		service.initUserSpaces = function (user) {
 			var configUserSpaces = this.getConfig('userSpaces');
-			var uLogin = user.loginId;
+			var users = configUserSpaces.users;
+			var uLoginId = user.loginId;
+
+			if(users.hasOwnProperty(uLoginId)){
+
+			}
 
 			if (uLogin === 'admin@myCube.com') {
 				var createDataList = configUserSpaces[uLogin]['create'];
@@ -609,6 +614,19 @@
 				spaces: listSpaceData
 			}).$promise;
 		}
+
+		expendSpaceData = function(spaceData){
+			var spaceConfig, appConfig;
+			service.getConfig().then(function(config){
+				spaceConfig = config;
+				return $http.get("").then(function(config){
+					appConfig = config;
+					
+				})
+			})
+		}
+
+		return service;
 	}
 
 

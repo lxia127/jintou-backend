@@ -84,31 +84,23 @@
 				}
 			],
 			"apps": [
-				"myProfile,myFinance,myTrade"
+				"userApp"
 			]
 		}
 	},
 	"userSpaces": {
-		"admin@myCube.com": {
-			"create": [
+		"users": {
+			"admin@myCube.com": [
 				{
-					"name": "myCube.com",
-					"alias": "我立方机构",
-					"type": "myCube"
+					"spaceData": {
+						"name": "myCube.com",
+						"alias": "我立方机构",
+						"type": "com.myCube"
+					},
+					"joinRole": "admin",
+					"joinStatus": "created"
 				}
 			]
-		},
-		"*@myCube.com": [
-			{
-				"join": "myCube.com",
-				"as": "member"
-			}
-		],
-		"other": [
-			{
-				"join": "myCube.com",
-				"as": "client"
-			}
-		]
+		}
 	}
 }

@@ -34,9 +34,6 @@
             var user = currentUser.$promise;
             return user;
           })
-          .then(function (user) {
-            return BSpace.initUserSpaces(user);
-          })
           .then(function () {
             return BUser.setCurrent();
           })/*
@@ -98,6 +95,12 @@
           var user = currentUser.$promise;
           return user;
         })
+          .then(function (user) {
+            return BSpace.initUserSpaces(user);
+          })
+          .then(function () {
+            return BUser.setCurrent();
+          })/*
           .then(user => {
             $rootScope.$broadcast("auth:createUser", { user: user });
             //set current user
@@ -116,7 +119,7 @@
             }).then(function () {
               return $q.when(user);
             });
-          })
+          })*/
         /*.then(function (newUser) {
           $rootScope.current.user = newUser;
           var tName = newUser.name;

@@ -685,3 +685,57 @@ export function findAllJoinableSpace(req, res) {
         .catch(handleError(res));
 }
 
+/**
+ * format of req.body
+ * [
+ *  {   
+ *      user: (loginId or userId or user object),
+ *      spaceData: {
+ *             name: xxx,
+        *      alias: xxx,
+        *      roles: [
+        *                  {
+        *                      name: xxxx
+        *                  }
+        *              ],
+        *      apps: [
+        *          {
+        *              name: xxxx,
+        *              ....
+        *          }
+        *      ]
+        *  },
+        joinRole: (roleId or roleName or role object),
+        joinStatus: (applying|joined|following)
+ *      
+ * }
+ * ]
+ */
+export function batchAddUserSpace(req, res) {
+    var listAddData = [];
+    var spaces = [];
+
+    if (Array.isArray(req.body)) {
+        req.body.forEach(function (item, index) {
+            var itemName = item.name.toLocaleLowerCase();
+            //appEngine and userApp can not add by this way
+            if (itemName !== 'appengine' && itemName != 'userapp') {
+                listAddData.push(item);
+            }
+        });
+
+        return Promise.each(listSpaceData, function (addData) {
+            var roleData = addData.joinRole || 'member';
+            var joinStatus = addData.joinStatus || 'applying';
+            return Space.addUserSpace(userId, addData.spaceData, joinRole, joinStatus).then(function (space) {
+                spaces.push(space);
+                return Promise.resolve(space);
+            })
+        })
+            .then(respondWithResult(res))
+            .catch(handleError(res));
+    } else {
+        res.status(500).send('please check input!');
+    }
+} 
+

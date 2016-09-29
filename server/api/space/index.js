@@ -11,11 +11,13 @@ router.get('/user', auth.isAuthenticated(), controller.findUserSpaces);
 router.get('/user/joinable', auth.isAuthenticated(), controller.findAllJoinableSpace);
 router.get('/', controller.index);
 router.get('/:id', controller.show);
-router.post('/', controller.create);
+
 router.put('/:id', controller.update);
 router.patch('/:id', controller.update);
 router.delete('/:id', controller.destroy);
 
 router.post('/userJoin', controller.userJoin);
+router.post('/user/batch', controller.batchAddUserSpace);
+router.post('/', controller.create);
 
 module.exports = router;
