@@ -103,149 +103,156 @@ export default function (sequelize, DataTypes) {
 
 					if (typeof spaceData === 'object') {
 						//if valid space object ,just return it
-						if (spaceData._id && isNaN(spaceData) && spaceData._id > 0) {
-							return Promise.resolve(spaceData);
-						}
-						else if (spaceData.name) { //find space, then return
-							return this.find({
-								where: {
-									name: spaceData.name
-								}
-							}).then(function (space) {
-								if (space && space._id && space._id > 0) {
-									return Promise.resolve(space);
-								}
-							})
-						}
-						else { //add new space
-							return new Promise(function (resolve, reject) {
-								if (spaceData.typeId) {
-									typeId = spaceData.typeId;
-									return resolve(spaceData.typeId);
-								} else if (spaceData.type) {
-									if (spaceData.type.roles) {
-										spaceData.roles = spaceData.type.roles;
-										delete spaceData.type.roles;
-									}
-									if (spaceData.type.apps) {
-										spaceData.apps = spaceData.type.apps;
-										delete spaceData.type.roles;
-									}
-									return that.addType(spaceData.type).then(function (type) {
-										typeId = type._id;
-										return resolve(type._id);
-									})
-								}
-								return resolve(null);
-							}).then(function (typeId) {
-								//console.log('typeId:', typeId);
-								spaceData.typeId = typeId;
-								return that.findOrCreate({
+						return new Promise(function (resolve, reject) {
+							if (spaceData._id && isNaN(spaceData) && spaceData._id > 0) {
+								return Promise.resolve(spaceData);
+							}
+							else if (spaceData.name) { //find space, then return
+								return this.find({
 									where: {
-										name: spaceData.name //spaceName must be unique name
-									},
-									defaults: spaceData
+										name: spaceData.name
+									}
+								}).then(function (space) {
+									if (space && space._id && space._id > 0) {
+										return Promise.resolve(space);
+									} else {
+										return Promise(null);
+									}
 								})
-							}).spread(function (space, created) {
-								spaceId = space._id;
-								//console.log('space', JSON.stringify(space));
-								if (spaceData.roles) {
-									var hasAdmin = false;
-									var hasMember = false;
-									//var hasCustomer = false;
-									var hasPublic = false;
-									spaceData.roles.forEach(function (role) {
-										if (role.name === 'admin') {
-											role.allowDelete = false;
-											hasAdmin = true;
+							}
+						}).then(function (space) {
+							if (space && space._id > 0) {
+								return Promise.resolve(space);
+							} else { //create new space
+								return new Promise(function (resolve, reject) {
+									if (spaceData.typeId) {
+										typeId = spaceData.typeId;
+										return resolve(spaceData.typeId);
+									} else if (spaceData.type) {
+										if (spaceData.type.roles) {
+											spaceData.roles = spaceData.type.roles;
+											delete spaceData.type.roles;
 										}
-										if (role.name === 'member') {
-											role.allowDelete = false;
-											hasMember = true;
+										if (spaceData.type.apps) {
+											spaceData.apps = spaceData.type.apps;
+											delete spaceData.type.roles;
+										}
+										return that.addType(spaceData.type).then(function (type) {
+											typeId = type._id;
+											return resolve(type._id);
+										})
+									}
+									return resolve(null);
+								}).then(function (typeId) {
+									//console.log('typeId:', typeId);
+									spaceData.typeId = typeId;
+									return that.findOrCreate({
+										where: {
+											name: spaceData.name //spaceName must be unique name
+										},
+										defaults: spaceData
+									})
+								}).spread(function (space, created) {
+									spaceId = space._id;
+									//console.log('space', JSON.stringify(space));
+									if (spaceData.roles) {
+										var hasAdmin = false;
+										var hasMember = false;
+										//var hasCustomer = false;
+										var hasPublic = false;
+										spaceData.roles.forEach(function (role) {
+											if (role.name === 'admin') {
+												role.allowDelete = false;
+												hasAdmin = true;
+											}
+											if (role.name === 'member') {
+												role.allowDelete = false;
+												hasMember = true;
+											}
+											/*
+											if(role.name === 'customer'){
+												role.allowDelete = false;
+												hasCustomer = true;
+											}*/
+											if (role.name === 'public') {
+												role.allowDelete = false;
+												hasPublic = true;
+											}
+										})
+
+										if (!hasAdmin) {
+											spaceData.roles.push(
+												{
+													name: "admin",
+													allowDelete: false
+												}
+											)
+										}
+
+										if (!hasMember) {
+											spaceData.roles.push(
+												{
+													name: "member",
+													allowDelete: false
+												}
+											)
 										}
 										/*
-										if(role.name === 'customer'){
-											role.allowDelete = false;
-											hasCustomer = true;
+										if(!hasCustomer){
+											spaceData.roles.push(
+												{
+													name: "customer",
+													allowDelete: false
+												}
+											)
 										}*/
-										if (role.name === 'public') {
-											role.allowDelete = false;
-											hasPublic = true;
+										if (!hasPublic) {
+											spaceData.roles.push(
+												{
+													name: "public",
+													allowDelete: false
+												}
+											)
+										}
+										return that.addRoles(spaceData.roles, space._id);
+									}
+									return Promise.resolve(null);
+								})
+									.then(function () {
+										//add apps
+										var listAppData = spaceData.apps || null;
+										if (listAppData && Array.isArray(listAppData)) {
+											return Promise.each(listAppData, function (appData, index) {
+												return App.add(appData, spaceId);
+											})
+										} else {
+											return Promise.resolve(null);
 										}
 									})
-
-									if (!hasAdmin) {
-										spaceData.roles.push(
-											{
-												name: "admin",
-												allowDelete: false
-											}
-										)
-									}
-
-									if (!hasMember) {
-										spaceData.roles.push(
-											{
-												name: "member",
-												allowDelete: false
-											}
-										)
-									}
-									/*
-									if(!hasCustomer){
-										spaceData.roles.push(
-											{
-												name: "customer",
-												allowDelete: false
-											}
-										)
-									}*/
-									if (!hasPublic) {
-										spaceData.roles.push(
-											{
-												name: "public",
-												allowDelete: false
-											}
-										)
-									}
-									return that.addRoles(spaceData.roles, space._id);
-								}
-								return Promise.resolve(null);
-							})
-								.then(function () {
-									//add apps
-									var listAppData = spaceData.apps || null;
-									if (listAppData && Array.isArray(listAppData)) {
-										return Promise.each(listAppData, function (appData, index) {
-											return App.add(appData, spaceId);
+									.then(function () {
+										//console.log('spaceId:', spaceId);
+										return that.find({
+											where: {
+												_id: spaceId
+											},
+											include: [
+												{
+													model: Category, as: 'type'
+												},
+												{
+													model: Role, as: 'roles'
+												},
+												{
+													model: App, as: 'apps'
+												}
+											]
+										}).then(function (space) {
+											//console.log('space:',JSON.stringify(space));
+											return Promise.resolve(space);
 										})
-									} else {
-										return Promise.resolve(null);
-									}
-								})
-								.then(function () {
-									//console.log('spaceId:', spaceId);
-									return that.find({
-										where: {
-											_id: spaceId
-										},
-										include: [
-											{
-												model: Category, as: 'type'
-											},
-											{
-												model: Role, as: 'roles'
-											},
-											{
-												model: App, as: 'apps'
-											}
-										]
-									}).then(function (space) {
-										//console.log('space:',JSON.stringify(space));
-										return Promise.resolve(space);
 									})
-								})
-						}
+							}
+						})
 					}
 					//if spaceId, return by spaceid
 					else if (isNaN(spaceData) && spaceData > 0) {
@@ -306,9 +313,7 @@ export default function (sequelize, DataTypes) {
 					if (typeof user === 'object') {
 						userId = user._id || user.id || null;
 					}
-					if (['applying', 'following', 'joined'].includes(jStatus)) {
-						joinStatus = jStatus;
-					} else {
+					if (!['applying', 'following', 'joined'].includes(joinStatus)) {
 						joinStatus = 'applying';
 					}
 					if (userId && userId > 0) {

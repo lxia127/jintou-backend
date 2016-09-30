@@ -554,16 +554,16 @@
             var that = this;
             return $http.get("components/blyn/core/space/config.json").then(function (oConfig) {
                 current.config = oConfig.data;
-				if(isCombined){
-					return $http.get("components/blyn/core/app/config.json").then(function(oConfig){
+				if (isCombined) {
+					return $http.get("components/blyn/core/app/config.json").then(function (oConfig) {
 						var appConfig = oConfig.data;
 						var spaceConfig = current.config;
-						angular.forEach(spaceConfig.types,function(sType, tKey){
+						angular.forEach(spaceConfig.types, function (sType, tKey) {
 							var apps = sType.apps;
 							var rApps = [];
-							angular.forEach(appConfig.apps,function(oConfig,key){
-								apps.forEach(function(appName,index){
-									if(appName === key){
+							angular.forEach(appConfig.apps, function (oConfig, key) {
+								apps.forEach(function (appName, index) {
+									if (appName === key) {
 										oConfig.name = key;
 										rApps.push(oConfig);
 									}
@@ -572,9 +572,9 @@
 							sType.apps = rApps;
 							spaceConfig[tKey] = sType;
 						})
-						angular.forEach(spaceConfig.userSpaces.users, function(userData, index){
-							angular.forEach(spaceConfig.types, function(oType, key){
-								if(userData.spaceData.type === key){
+						angular.forEach(spaceConfig.userSpaces.users, function (userData, index) {
+							angular.forEach(spaceConfig.types, function (oType, key) {
+								if (userData.spaceData.type === key) {
 									userData.spaceData.type = oType;
 								}
 								spaceConfig['userSpaces']['users'][index] = userData;
@@ -610,27 +610,19 @@
         }
 
 		service.initUserSpaces = function (user) {
-			var configUserSpaces = this.getConfig('userSpaces');
-			var users = configUserSpaces.users;
-			var uLoginId = user.loginId;
 
-			if(users.hasOwnProperty(uLoginId)){
+			return this.loadConfig().then(function (config) {
+				var configUserSpaces = config.userSpaces;
+				var users = configUserSpaces.users;
+				var uLoginId = user.loginId;
 
-			}
-
-			if (uLogin === 'admin@myCube.com') {
-				var createDataList = configUserSpaces[uLogin]['create'];
-				return this.batchAddUserSpace(createDataList);
-			} else {
-				var result = /@myCube.com$/.test(uLogin);
-				var joinDataList = configUserSpaces['*@myCube.com'];
-				if (result) {
-					return this.batchJoinUserSpace(joinDataList);
+				if(configUserSpaces.hasOwnProperty(uLoginId)){
+					var uListSpaceData = configUserSpaces[uListSpaceData];
+					return this.batchAddUserSpace(createDataList);
 				} else {
-					var joinDataList = configUserSpaces['other'];
-					return this.batchJoinUserSpace(joinDataList);
+					return $q.when(null);
 				}
-			}
+			})
 		}
 
 		service.batchAddUserSpace = function (listSpaceData) {
