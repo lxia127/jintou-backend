@@ -111,3 +111,27 @@ export function destroy(req, res) {
     .then(removeEntity(res))
     .catch(handleError(res));
 }
+
+export function index(req, res){
+    //还要加验证程序，现在只是暂时让微信认证而已
+    if(req.query.echostr){
+      res.send(req.query.echostr);
+    }
+    // else{
+    //   res.send('<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx45a1e16368ad52ba&redirect_uri=http://e7a09da6.ngrok.io&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect">是这里</a>');
+    // }
+}
+
+export function create(req, res){
+    res.send('<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx45a1e16368ad52ba&redirect_uri=http://e7a09da6.ngrok.io&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect">是这里</a>');    
+}
+
+export function wechatOauthRedirect(req,res){
+  var APPID = "wx72ab601de435b361";
+  var REDIRECT_URI = "http://www.billyn.net:8100";  
+  var url = "https://open.weixin.qq.com/connect/oauth2/authorize?"+
+            "appid="+APPID+
+            "&redirect_uri="+REDIRECT_URI+
+            "&response_type=code&scope=1&state=1#wechat_redirect";
+  res.redirect(url);
+}
