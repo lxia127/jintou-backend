@@ -446,11 +446,11 @@ export function findUserSpaces(req, res) {
             joinStatus = req.query.joinStatus;
         }
 
-        //console.log('query:', JSON.stringify(query));
+        console.log('query:', JSON.stringify(query));
 
-        //console.log('findSpaceWhere:', JSON.stringify(findSpaceWhere));
+        console.log('findSpaceWhere:', JSON.stringify(findSpaceWhere));
 
-        //console.log('joinStatus', joinStatus);
+        console.log('joinStatus', joinStatus);
 
         return Space.findAll({
             where: findSpaceWhere,
@@ -714,6 +714,19 @@ export function findAllJoinableSpace(req, res) {
 export function batchAddUserSpace(req, res) {
     var listAddData = [];
     var spaces = [];
+    var userId;
+    
+    if(req.user){
+        userId = req.user._id;
+    }
+
+    if(req.body && req.body.userId){
+        userId = req.body.userId;
+    }
+
+    if(req.query && req.query.userId){
+        userId = req.query.userId;
+    }
 
     if (Array.isArray(req.body)) {
         req.body.forEach(function (item, index) {

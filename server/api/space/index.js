@@ -17,7 +17,7 @@ router.patch('/:id', controller.update);
 router.delete('/:id', controller.destroy);
 
 router.post('/userJoin', controller.userJoin);
-router.post('/user/batch', controller.batchAddUserSpace);
+router.post('/user/batch', auth.isAuthenticated(), controller.batchAddUserSpace);
 router.post('/', controller.create);
 
 module.exports = router;

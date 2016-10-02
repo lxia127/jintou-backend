@@ -90,6 +90,7 @@
        */
       createUser(userData, callback) {
         return $http.post('/api/users', userData).then(function (res) {
+          console.log(res);
           $cookies.put('token', res.data.token);
           currentUser = User.get();
           var user = currentUser.$promise;

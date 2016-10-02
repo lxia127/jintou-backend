@@ -558,10 +558,14 @@
 					return $http.get("components/blyn/core/app/config.json").then(function (oConfig) {
 						var appConfig = oConfig.data;
 						var spaceConfig = current.config;
-						angular.forEach(spaceConfig.types, function (sType, tKey) {
+						var spaceTypes = spaceConfig.types;
+						var configApps = appConfig.apps;
+						var configUsers = spaceConfig.userSpaces.users;
+						angular.forEach(spaceTypes, function (sType, tKey) {
+							sType.name = tKey;
 							var apps = sType.apps;
 							var rApps = [];
-							angular.forEach(appConfig.apps, function (oConfig, key) {
+							angular.forEach(configApps, function (oConfig, key) {
 								apps.forEach(function (appName, index) {
 									if (appName === key) {
 										oConfig.name = key;
@@ -570,15 +574,20 @@
 								})
 							})
 							sType.apps = rApps;
-							spaceConfig[tKey] = sType;
+							//spaceConfig.type = sType;
 						})
-						angular.forEach(spaceConfig.userSpaces.users, function (userData, index) {
-							angular.forEach(spaceConfig.types, function (oType, key) {
-								if (userData.spaceData.type === key) {
-									userData.spaceData.type = oType;
-								}
-								spaceConfig['userSpaces']['users'][index] = userData;
+
+						angular.forEach(configUsers, function (userData, index) {
+							var listUserData = [];
+							userData.forEach(function (oUserData, index) {
+								angular.forEach(spaceTypes, function (oType, key) {
+									if (oUserData.spaceData && oUserData.spaceData.type === key) {
+										oUserData.spaceData.type = oType;
+									}									
+								})
+								listUserData.push(oUserData);
 							})
+							spaceConfig['userSpaces']['users'][index] = listUserData;
 						})
 						current.config = spaceConfig
 						return $q.when(current.config);
@@ -616,7 +625,7 @@
 				var users = configUserSpaces.users;
 				var uLoginId = user.loginId;
 
-				if(configUserSpaces.hasOwnProperty(uLoginId)){
+				if (configUserSpaces.hasOwnProperty(uLoginId)) {
 					var uListSpaceData = configUserSpaces[uListSpaceData];
 					return this.batchAddUserSpace(createDataList);
 				} else {

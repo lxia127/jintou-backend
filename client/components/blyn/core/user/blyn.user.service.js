@@ -2,7 +2,7 @@
 
 (function () {
 
-    function BUserService($resource, User, $q, Util, $rootScope) {
+    function BUserService($resource, User, $q, Util, $rootScope,$http) {
         var safeCb = Util.safeCb;
         var current = {};
         var resUser = $resource('/api/users/:id/:controller', {
@@ -95,7 +95,7 @@
         }
 
         //return promise
-        var loadMe = function () {
+        service.loadMe = function () {
             return resUser.me().$promise.then(function (user) {
                 current = user;
                 $rootScope.current.user = user;
@@ -104,12 +104,12 @@
         }
 
         //return promise
-        var loadMySpaces = function () {
+        service.loadMySpaces = function () {
             return resSpace.getUserSpaces().$promise.then(function (spaces) {
                 current.spaces = spaces;
                 var space = spaces[0];
                 $rootScope.current.space = spaces[0];
-                var apps = space.space;
+                var apps = space.apps;
                 apps.forEach(function (app) {
                     if (app.name.toLocaleLowerCase() === 'appengine') {
                         $rootScope.current.app = app;

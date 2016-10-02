@@ -161,7 +161,8 @@ export function create(req, res, next) {
         ]
       }
       return Space.addUserSpace(user, mySpaceData, 'admin', 'joined');
-    }).then(function () {
+    }).then(function (data) {
+      //console.log('in create user:',JSON.stringify(data));
       var token = jwt.sign({ _id: newUser._id }, config.secrets.session, {
         expiresIn: 60 * 60 * 5
       });

@@ -105,23 +105,29 @@ export default function (sequelize, DataTypes) {
 						//if valid space object ,just return it
 						return new Promise(function (resolve, reject) {
 							if (spaceData._id && isNaN(spaceData) && spaceData._id > 0) {
+								spaceId = spaceData._id;
 								return Promise.resolve(spaceData);
 							}
 							else if (spaceData.name) { //find space, then return
-								return this.find({
+								return that.find({
 									where: {
 										name: spaceData.name
 									}
 								}).then(function (space) {
 									if (space && space._id && space._id > 0) {
-										return Promise.resolve(space);
+										spaceId = space._id;
+										return resolve(space);
 									} else {
-										return Promise(null);
+										return resolve(null);
 									}
 								})
 							}
+							else {
+								return resolve(null);
+							}
 						}).then(function (space) {
 							if (space && space._id > 0) {
+								spaceId = space._id;
 								return Promise.resolve(space);
 							} else { //create new space
 								return new Promise(function (resolve, reject) {
@@ -141,8 +147,9 @@ export default function (sequelize, DataTypes) {
 											typeId = type._id;
 											return resolve(type._id);
 										})
-									}
-									return resolve(null);
+									} else {
+										return resolve(null);
+									}									
 								}).then(function (typeId) {
 									//console.log('typeId:', typeId);
 									spaceData.typeId = typeId;
@@ -215,8 +222,9 @@ export default function (sequelize, DataTypes) {
 											)
 										}
 										return that.addRoles(spaceData.roles, space._id);
-									}
-									return Promise.resolve(null);
+									} else {
+										return Promise.resolve(null);
+									}									
 								})
 									.then(function () {
 										//add apps
@@ -298,6 +306,7 @@ export default function (sequelize, DataTypes) {
 						if (!roleData.spaceId || !roleData.name || roleData.name === "") {
 							return Promise.reject('please provide spaceId and role name!');
 						}
+						//console.log('before space model add role:', JSON.stringify(roleData));
 						return Role.addRole(roleData);
 					} else {
 						return Promise.reject('fail to add role!');
@@ -307,6 +316,8 @@ export default function (sequelize, DataTypes) {
 
 				addUserSpace: function (user, spaceData, roleData, joinStatus) {
 					var userId;
+					var that = this;
+					var UserRole = sqldb.UserRole;
 					if (!isNaN(user) && user > 0) {
 						userId = user;
 					}
@@ -318,7 +329,9 @@ export default function (sequelize, DataTypes) {
 					}
 					if (userId && userId > 0) {
 						return this.add(spaceData).then(function (space) {
-							return space.addRole(roleData).then(function (role) {
+							//console.log('before space model add userSpace:', JSON.stringify(roleData));
+							return that.addRole(roleData,space._id).then(function (role) {
+								//console.log('after space model addRole:', JSON.stringify(role));
 								if (typeof role === 'object') {
 									return UserRole.findOrCreate({
 										where: {
@@ -326,8 +339,12 @@ export default function (sequelize, DataTypes) {
 											roleId: role._id
 										},
 										defaults: {
-											joinStatus: joinStatus
+											joinStatus: joinStatus,
+											spaceId: role.spaceId
 										}
+									}).spread(function(entity,created){
+										//console.log('addUserSpace created:',created);
+										return Promise.resolve(entity);
 									})
 								} else {
 									return Promise.resolve(null);
