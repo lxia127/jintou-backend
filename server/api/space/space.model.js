@@ -37,6 +37,36 @@ export default function (sequelize, DataTypes) {
 				*/
 			},
 			classMethods: {
+				getSpace: function (spaceData) {
+					var isReturned = false;
+					if (!isNaN(spaceData) && spaceData > 0) {
+						isReturned = true;
+						return this.findById(spaceData);
+					}
+					var findData = {};
+					if (typeof spaceData === 'string') {
+						spaceData = {
+							name: spaceData
+						};
+					}
+
+					if (typeof spaceData === 'object') {
+						if (spaceData.name) {
+							findData.name = spaceData.name;
+						}
+					}
+
+					if (Object.keys(findData).length > 0) {
+						isReturned = true;
+						return this.find({
+							where: findData
+						})
+					}
+
+					if (!isReturned) {
+						return Promise.resolve(null);
+					}
+				},
 				getUserSpaces: function (userId) {
 					UserRole.belongsTo(User);
 					UserRole.blongsTo(this);
@@ -149,7 +179,7 @@ export default function (sequelize, DataTypes) {
 										})
 									} else {
 										return resolve(null);
-									}									
+									}
 								}).then(function (typeId) {
 									//console.log('typeId:', typeId);
 									spaceData.typeId = typeId;
@@ -224,7 +254,7 @@ export default function (sequelize, DataTypes) {
 										return that.addRoles(spaceData.roles, space._id);
 									} else {
 										return Promise.resolve(null);
-									}									
+									}
 								})
 									.then(function () {
 										//add apps
@@ -318,41 +348,62 @@ export default function (sequelize, DataTypes) {
 					var userId;
 					var that = this;
 					var UserRole = sqldb.UserRole;
+					var isCreated = false;
+
 					if (!isNaN(user) && user > 0) {
 						userId = user;
 					}
 					if (typeof user === 'object') {
 						userId = user._id || user.id || null;
 					}
+					if (joinStatus === 'created' || 'create') {
+						isCreated = true;
+						joinStatus = 'joined';
+					}
 					if (!['applying', 'following', 'joined'].includes(joinStatus)) {
 						joinStatus = 'applying';
 					}
+					console.log('joinStatus:',joinStatus);
+					console.log('isCreated:',isCreated);
 					if (userId && userId > 0) {
-						return this.add(spaceData).then(function (space) {
-							//console.log('before space model add userSpace:', JSON.stringify(roleData));
-							return that.addRole(roleData,space._id).then(function (role) {
-								//console.log('after space model addRole:', JSON.stringify(role));
-								if (typeof role === 'object') {
-									return UserRole.findOrCreate({
-										where: {
-											userId: userId,
-											roleId: role._id
-										},
-										defaults: {
-											joinStatus: joinStatus,
-											spaceId: role.spaceId
+						return new Promise(function (resolve, reject) {
+							console.log('spaceData:',spaceData);
+							if (isCreated) {
+								joinStatus = "joined";
+								return resolve(that.add(spaceData));
+							} else {
+								return resolve(that.getSpace(spaceData));
+							}
+						})
+							.then(function (space) {
+								console.log('before space model add userSpace:', JSON.stringify(roleData));
+								if (space) {
+									return that.addRole(roleData, space._id).then(function (role) {
+										//console.log('after space model addRole:', JSON.stringify(role));
+										if (typeof role === 'object') {
+											return UserRole.findOrCreate({
+												where: {
+													userId: userId,
+													roleId: role._id
+												},
+												defaults: {
+													joinStatus: joinStatus,
+													spaceId: role.spaceId
+												}
+											}).spread(function (entity, created) {
+												//console.log('addUserSpace created:',created);
+												return Promise.resolve(entity);
+											})
+										} else {
+											return Promise.reject('role is invalid');
 										}
-									}).spread(function(entity,created){
-										//console.log('addUserSpace created:',created);
-										return Promise.resolve(entity);
 									})
 								} else {
-									return Promise.resolve(null);
+									return Promise.reject('invalid space');
 								}
 							})
-						})
 					} else {
-						return Promise.resolve(null);
+						return Promise.reject('no userId');
 					}
 
 					/*

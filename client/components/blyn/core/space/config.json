@@ -100,6 +100,17 @@
 					"joinRole": "admin",
 					"joinStatus": "created"
 				}
+			],
+			"u1": [
+				{
+					"spaceData": {
+						"name": "myCube.com",
+						"alias": "我立方机构",
+						"type": "com.myCube"
+					},
+					"joinRole": "admin",
+					"joinStatus": "created"
+				}
 			]
 		}
 	}

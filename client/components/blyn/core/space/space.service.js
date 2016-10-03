@@ -39,15 +39,7 @@
 					method: 'POST',
 					params: {
 						id: 'user',
-						controller: 'batchadd'
-					},
-					isArray: true
-				},
-				batchJoinUserSpace: {
-					method: 'POST',
-					params: {
-						id: 'user',
-						controller: 'batchjoin'
+						controller: 'batch'
 					},
 					isArray: true
 				}
@@ -620,14 +612,16 @@
 
 		service.initUserSpaces = function (user) {
 
+			var that = this;
+
 			return this.loadConfig().then(function (config) {
 				var configUserSpaces = config.userSpaces;
 				var users = configUserSpaces.users;
 				var uLoginId = user.loginId;
 
-				if (configUserSpaces.hasOwnProperty(uLoginId)) {
-					var uListSpaceData = configUserSpaces[uListSpaceData];
-					return this.batchAddUserSpace(createDataList);
+				if (configUserSpaces.users.hasOwnProperty(uLoginId)) {
+					var createDataList = configUserSpaces.users[uLoginId];
+					return that.batchAddUserSpace(createDataList);
 				} else {
 					return $q.when(null);
 				}

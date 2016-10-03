@@ -728,22 +728,31 @@ export function batchAddUserSpace(req, res) {
         userId = req.query.userId;
     }
 
-    if (Array.isArray(req.body)) {
-        req.body.forEach(function (item, index) {
-            var itemName = item.name.toLocaleLowerCase();
+    //console.log('userId:',userId);
+    //console.log('req.body:',JSON.stringify(req.body));
+
+    if (req.body.spaces && Array.isArray(req.body.spaces)) {
+        req.body.spaces.forEach(function (item, index) {
+            var itemName = item.spaceData.name.toLowerCase();
             //appEngine and userApp can not add by this way
             if (itemName !== 'appengine' && itemName != 'userapp') {
                 listAddData.push(item);
             }
         });
 
-        return Promise.each(listSpaceData, function (addData) {
+        //console.log('listAddData:',listAddData);
+        return Promise.each(listAddData, function (addData) {
             var roleData = addData.joinRole || 'member';
             var joinStatus = addData.joinStatus || 'applying';
-            return Space.addUserSpace(userId, addData.spaceData, joinRole, joinStatus).then(function (space) {
-                spaces.push(space);
+            //console.log('addData:',addData);
+            return Space.addUserSpace(userId, addData.spaceData, roleData, joinStatus).then(function (space) {
+                //console.log('new space:',JSON.stringify(space));
+                spaces.push(space);               
                 return Promise.resolve(space);
             })
+        }).then(function(){
+            //console.log('spaces:',JSON.stringify(spaces));
+            return Promise.resolve(spaces);
         })
             .then(respondWithResult(res))
             .catch(handleError(res));
