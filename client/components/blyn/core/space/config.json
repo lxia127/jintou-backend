@@ -45,7 +45,7 @@
 				}
 			],
 			"apps": [
-				"spaceMember"
+				"weMember"
 			]
 		},
 		"com.myCube": {
@@ -70,13 +70,13 @@
 				}
 			],
 			"apps": [
-				"spaceMember,spaceProduct,spaceFinance,spaceTrade"
+				"weProduct","weFinance","weTrade"
 			]
 		},
 		"person.myCube": {
 			"name": "person.myCube",
 			"alias": "我立方个人空间",
-			"description": "我立方平台的个人空间",
+			"description": "我立方个人空间",
 			"roles": [
 				{
 					"name": "admin",
@@ -101,7 +101,7 @@
 					"joinStatus": "created"
 				}
 			],
-			"u1": [
+			"u8": [
 				{
 					"spaceData": {
 						"name": "myCube.com",

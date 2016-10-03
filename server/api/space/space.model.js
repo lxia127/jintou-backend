@@ -259,6 +259,7 @@ export default function (sequelize, DataTypes) {
 									.then(function () {
 										//add apps
 										var listAppData = spaceData.apps || null;
+										//console.log('listAppData:',JSON.stringify(listAppData));
 										if (listAppData && Array.isArray(listAppData)) {
 											return Promise.each(listAppData, function (appData, index) {
 												return App.add(appData, spaceId);
@@ -363,20 +364,25 @@ export default function (sequelize, DataTypes) {
 					if (!['applying', 'following', 'joined'].includes(joinStatus)) {
 						joinStatus = 'applying';
 					}
-					console.log('joinStatus:',joinStatus);
-					console.log('isCreated:',isCreated);
+					//console.log('joinStatus:',joinStatus);
+					//console.log('isCreated:',isCreated);
 					if (userId && userId > 0) {
 						return new Promise(function (resolve, reject) {
-							console.log('spaceData:',spaceData);
+							//console.log('spaceData:',spaceData);
 							if (isCreated) {
 								joinStatus = "joined";
-								return resolve(that.add(spaceData));
+								return that.add(spaceData).then(function(space){
+									//console.log('addUserSpace space:',JSON.stringify(space));
+									return resolve(space);
+								});
 							} else {
-								return resolve(that.getSpace(spaceData));
+								return that.getSpace(spaceData).then(function(space){
+									return resolve(space);
+								});
 							}
 						})
 							.then(function (space) {
-								console.log('before space model add userSpace:', JSON.stringify(roleData));
+								//console.log('before space model add userSpace:', JSON.stringify(roleData));
 								if (space) {
 									return that.addRole(roleData, space._id).then(function (role) {
 										//console.log('after space model addRole:', JSON.stringify(role));

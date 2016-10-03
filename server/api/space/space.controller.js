@@ -446,11 +446,11 @@ export function findUserSpaces(req, res) {
             joinStatus = req.query.joinStatus;
         }
 
-        console.log('query:', JSON.stringify(query));
+        //console.log('query:', JSON.stringify(query));
 
-        console.log('findSpaceWhere:', JSON.stringify(findSpaceWhere));
+        //console.log('findSpaceWhere:', JSON.stringify(findSpaceWhere));
 
-        console.log('joinStatus', joinStatus);
+        //console.log('joinStatus', joinStatus);
 
         return Space.findAll({
             where: findSpaceWhere,
