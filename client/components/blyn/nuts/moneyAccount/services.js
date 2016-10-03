@@ -2,7 +2,7 @@
 
 (function () {
 
-	function SpaceService($resource, User, $q, Util, BApp, $rootScope, BRole, BCircle, $http) {
+	function MoneyAccountService($resource, User, $q, Util, BApp, $rootScope, BRole, BCircle, $http) {
 		var safeCb = Util.safeCb;
 		var current = {};
 		var resSpace = $resource('/api/spaces/:id/:controller', {
@@ -50,8 +50,8 @@
 
 		var service = {};
 
-		service.getAllSpaces = function () {
-			return $resource('/api/spaces/').query().$promise;
+		service.getAccount = function (data) {
+			return $q.when(data);
 		}
 		service.getUserSpaces = function (findData, callback) {
 			//get: /api/spaces/user
@@ -645,6 +645,6 @@
 
 
 	angular.module('billynApp.core')
-		.factory('BSpace', SpaceService);
+		.factory('BMoneyAccount', MoneyAccountService);
 
 })();

@@ -37,6 +37,36 @@ export default function (sequelize, DataTypes) {
 				*/
 			},
 			classMethods: {
+				getSpace: function (spaceData) {
+					var isReturned = false;
+					if (!isNaN(spaceData) && spaceData > 0) {
+						isReturned = true;
+						return this.findById(spaceData);
+					}
+					var findData = {};
+					if (typeof spaceData === 'string') {
+						spaceData = {
+							name: spaceData
+						};
+					}
+
+					if (typeof spaceData === 'object') {
+						if (spaceData.name) {
+							findData.name = spaceData.name;
+						}
+					}
+
+					if (Object.keys(findData).length > 0) {
+						isReturned = true;
+						return this.find({
+							where: findData
+						})
+					}
+
+					if (!isReturned) {
+						return Promise.resolve(null);
+					}
+				},
 				getUserSpaces: function (userId) {
 					UserRole.belongsTo(User);
 					UserRole.blongsTo(this);
@@ -95,122 +125,185 @@ export default function (sequelize, DataTypes) {
 					var typeId, spaceId;
 					var Category = sqldb.Category;
 					var Role = sqldb.Role;
+					var App = sqldb.App;
 
 					this.hasMany(Role, { as: 'roles' });
+					this.hasMany(App, { as: 'apps' });
 					this.belongsTo(Category, { as: 'type' });
 
-					return new Promise(function (resolve, reject) {
-						if (spaceData.typeId) {
-							typeId = spaceData.typeId;
-							return resolve(spaceData.typeId);
-						} else if (spaceData.type) {
-							if (spaceData.type.roles) {
-								spaceData.roles = spaceData.type.roles;
-								delete spaceData.type.roles;
+					if (typeof spaceData === 'object') {
+						//if valid space object ,just return it
+						return new Promise(function (resolve, reject) {
+							if (spaceData._id && isNaN(spaceData) && spaceData._id > 0) {
+								spaceId = spaceData._id;
+								return Promise.resolve(spaceData);
 							}
-							if (spaceData.type.apps) {
-								spaceData.apps = spaceData.type.apps;
-								delete spaceData.type.roles;
-							}
-							return that.addType(spaceData.type).then(function (type) {
-								typeId = type._id;
-								return resolve(type._id);
-							})
-						}
-						return resolve(null);
-					}).then(function (typeId) {
-						//console.log('typeId:', typeId);
-						spaceData.typeId = typeId;
-						return that.findOrCreate({
-							where: {
-								name: spaceData.name //spaceName must be unique name
-							},
-							defaults: spaceData
-						})
-					}).spread(function (space, created) {
-						spaceId = space._id;
-						//console.log('space', JSON.stringify(space));
-						if (spaceData.roles) {
-							var hasAdmin = false;
-							var hasMember = false;
-							//var hasCustomer = false;
-							var hasPublic = false;
-							spaceData.roles.forEach(function (role) {
-								if (role.name === 'admin') {
-									role.allowDelete = false;
-									hasAdmin = true;
-								}
-								if (role.name === 'member') {
-									role.allowDelete = false;
-									hasMember = true;
-								}
-								/*
-								if(role.name === 'customer'){
-									role.allowDelete = false;
-									hasCustomer = true;
-								}*/
-								if (role.name === 'public') {
-									role.allowDelete = false;
-									hasPublic = true;
-								}
-							})
-
-							if (!hasAdmin) {
-								spaceData.roles.push(
-									{
-										name: "admin",
-										allowDelete: false
+							else if (spaceData.name) { //find space, then return
+								return that.find({
+									where: {
+										name: spaceData.name
 									}
-								)
-							}
-
-							if (!hasMember) {
-								spaceData.roles.push(
-									{
-										name: "member",
-										allowDelete: false
+								}).then(function (space) {
+									if (space && space._id && space._id > 0) {
+										spaceId = space._id;
+										return resolve(space);
+									} else {
+										return resolve(null);
 									}
-								)
+								})
 							}
-							/*
-							if(!hasCustomer){
-								spaceData.roles.push(
-									{
-										name: "customer",
-										allowDelete: false
-									}
-								)
-							}*/
-							if (!hasPublic) {
-								spaceData.roles.push(
-									{
-										name: "public",
-										allowDelete: false
-									}
-								)
+							else {
+								return resolve(null);
 							}
-							return that.addRoles(spaceData.roles, space._id);
-						}
-						return Promise.resolve(null);
-					}).then(function () {
-						//console.log('spaceId:', spaceId);
-						return that.find({
-							where: {
-								_id: spaceId
-							},
-							include: [
-								{
-									model: Category, as: 'type'
-								},
-								{
-									model: Role, as: 'roles'
-								}
-							]
 						}).then(function (space) {
-							//console.log('space:',JSON.stringify(space));
-							return Promise.resolve(space);
+							if (space && space._id > 0) {
+								spaceId = space._id;
+								return Promise.resolve(space);
+							} else { //create new space
+								return new Promise(function (resolve, reject) {
+									if (spaceData.typeId) {
+										typeId = spaceData.typeId;
+										return resolve(spaceData.typeId);
+									} else if (spaceData.type) {
+										if (spaceData.type.roles) {
+											spaceData.roles = spaceData.type.roles;
+											delete spaceData.type.roles;
+										}
+										if (spaceData.type.apps) {
+											spaceData.apps = spaceData.type.apps;
+											delete spaceData.type.roles;
+										}
+										return that.addType(spaceData.type).then(function (type) {
+											typeId = type._id;
+											return resolve(type._id);
+										})
+									} else {
+										return resolve(null);
+									}
+								}).then(function (typeId) {
+									//console.log('typeId:', typeId);
+									spaceData.typeId = typeId;
+									return that.findOrCreate({
+										where: {
+											name: spaceData.name //spaceName must be unique name
+										},
+										defaults: spaceData
+									})
+								}).spread(function (space, created) {
+									spaceId = space._id;
+									//console.log('space', JSON.stringify(space));
+									if (spaceData.roles) {
+										var hasAdmin = false;
+										var hasMember = false;
+										//var hasCustomer = false;
+										var hasPublic = false;
+										spaceData.roles.forEach(function (role) {
+											if (role.name === 'admin') {
+												role.allowDelete = false;
+												hasAdmin = true;
+											}
+											if (role.name === 'member') {
+												role.allowDelete = false;
+												hasMember = true;
+											}
+											/*
+											if(role.name === 'customer'){
+												role.allowDelete = false;
+												hasCustomer = true;
+											}*/
+											if (role.name === 'public') {
+												role.allowDelete = false;
+												hasPublic = true;
+											}
+										})
+
+										if (!hasAdmin) {
+											spaceData.roles.push(
+												{
+													name: "admin",
+													allowDelete: false
+												}
+											)
+										}
+
+										if (!hasMember) {
+											spaceData.roles.push(
+												{
+													name: "member",
+													allowDelete: false
+												}
+											)
+										}
+										/*
+										if(!hasCustomer){
+											spaceData.roles.push(
+												{
+													name: "customer",
+													allowDelete: false
+												}
+											)
+										}*/
+										if (!hasPublic) {
+											spaceData.roles.push(
+												{
+													name: "public",
+													allowDelete: false
+												}
+											)
+										}
+										return that.addRoles(spaceData.roles, space._id);
+									} else {
+										return Promise.resolve(null);
+									}
+								})
+									.then(function () {
+										//add apps
+										var listAppData = spaceData.apps || null;
+										//console.log('listAppData:',JSON.stringify(listAppData));
+										if (listAppData && Array.isArray(listAppData)) {
+											return Promise.each(listAppData, function (appData, index) {
+												return App.add(appData, spaceId);
+											})
+										} else {
+											return Promise.resolve(null);
+										}
+									})
+									.then(function () {
+										//console.log('spaceId:', spaceId);
+										return that.find({
+											where: {
+												_id: spaceId
+											},
+											include: [
+												{
+													model: Category, as: 'type'
+												},
+												{
+													model: Role, as: 'roles'
+												},
+												{
+													model: App, as: 'apps'
+												}
+											]
+										}).then(function (space) {
+											//console.log('space:',JSON.stringify(space));
+											return Promise.resolve(space);
+										})
+									})
+							}
 						})
-					})
+					}
+					//if spaceId, return by spaceid
+					else if (isNaN(spaceData) && spaceData > 0) {
+						return Space.find({
+							where: {
+								_id: spaceData
+							}
+						})
+					}
+					else {
+						return Promise.reject('not valide spacedata');
+					}
 				},
 
 				addRoles: function (listRoleData, spaceId) {
@@ -244,6 +337,7 @@ export default function (sequelize, DataTypes) {
 						if (!roleData.spaceId || !roleData.name || roleData.name === "") {
 							return Promise.reject('please provide spaceId and role name!');
 						}
+						//console.log('before space model add role:', JSON.stringify(roleData));
 						return Role.addRole(roleData);
 					} else {
 						return Promise.reject('fail to add role!');
@@ -251,93 +345,160 @@ export default function (sequelize, DataTypes) {
 
 				},
 
-				addUserSpace: function (user) {
-					var spaceData = {};
-					var newSpace;
+				addUserSpace: function (user, spaceData, roleData, joinStatus) {
+					var userId;
+					var that = this;
 					var UserRole = sqldb.UserRole;
-					var App = sqldb.App;
-					if (typeof user === 'object') {
-						var alias = user.alias || user.name || user.loginId;
-						spaceData.name = 'mySpace_of_' + user.loginId;
-						spaceData.alias = 'mySpace(' + alias +')';
-						spaceData.type = 'personal';
-						return this.add(spaceData).then(function (space) {
-							//add user into admin of space
-							newSpace = space;
-							return UserRole.add({
-								userId: user._id,
-								role: 'admin',
-								spaceId: space._id
-							});
-						})
-							.then(function () {
-								//add appEngine for user space
-								return App.add(
-									{
-										"name":"appEngine",
-										"alias": "appEngine",
-										"type": "app.core",
-										"cores": {
-											"role": {
-												"grants": {
-													"admin": "adminSpaceRole|管理机构角色,adminUserRole|管理用户角色",
-													"everyone": "myRole|我的角色"
-												}
-											},
-											"space": {
-												"grants": {
-													"admin": [
-														{
-															"name": "adminSpace",
-															"alias": "机构设置"
-														},
-														{
-															"name": "appStore",
-															"alias": "应用商店"
-														}
-													]
-												}
-											},
-											"collab": {
-												"grants": {
-													"admin": ["adminCollab|设置协作"],
-													"manager": ["manageCollab|管理协作"],
-													"everyone": "collabNuts|协作功能"
-												}
-											},
-											"circle": {
-												"grants": {
-													"admin": ["adminCircle|设置机构圈"],
-													"manager": ["manageCircle|管理机构圈"],
-													"everyone": ["circleMember|机构圈主页"]
-												}
-											}
-										}
-									},newSpace._id
-								);
-							})
-							.then(function () {
-								//add personApp for user space
-								return App.add(
-									{
-										"name":"personApp",
-										"alias": "Person App",
-										"type": "app.core",
-										"cores": {
-											"user": {
-												"grants": {
-													"admin": "adminUser, myProfile"
-												}
-											}
-										}
-									},newSpace._id
-								);
-							})
-							.then(function () {
-								return newSpace;
-							})
+					var isCreated = false;
+
+					if (!isNaN(user) && user > 0) {
+						userId = user;
 					}
-				}
+					if (typeof user === 'object') {
+						userId = user._id || user.id || null;
+					}
+					if (joinStatus === 'created' || 'create') {
+						isCreated = true;
+						joinStatus = 'joined';
+					}
+					if (!['applying', 'following', 'joined'].includes(joinStatus)) {
+						joinStatus = 'applying';
+					}
+					//console.log('joinStatus:',joinStatus);
+					//console.log('isCreated:',isCreated);
+					if (userId && userId > 0) {
+						return new Promise(function (resolve, reject) {
+							//console.log('spaceData:',spaceData);
+							if (isCreated) {
+								joinStatus = "joined";
+								return that.add(spaceData).then(function(space){
+									//console.log('addUserSpace space:',JSON.stringify(space));
+									return resolve(space);
+								});
+							} else {
+								return that.getSpace(spaceData).then(function(space){
+									return resolve(space);
+								});
+							}
+						})
+							.then(function (space) {
+								//console.log('before space model add userSpace:', JSON.stringify(roleData));
+								if (space) {
+									return that.addRole(roleData, space._id).then(function (role) {
+										//console.log('after space model addRole:', JSON.stringify(role));
+										if (typeof role === 'object') {
+											return UserRole.findOrCreate({
+												where: {
+													userId: userId,
+													roleId: role._id
+												},
+												defaults: {
+													joinStatus: joinStatus,
+													spaceId: role.spaceId
+												}
+											}).spread(function (entity, created) {
+												//console.log('addUserSpace created:',created);
+												return Promise.resolve(entity);
+											})
+										} else {
+											return Promise.reject('role is invalid');
+										}
+									})
+								} else {
+									return Promise.reject('invalid space');
+								}
+							})
+					} else {
+						return Promise.reject('no userId');
+					}
+
+					/*
+						var spaceData = {};
+						var newSpace;
+						var UserRole = sqldb.UserRole;
+						var App = sqldb.App;
+						if (typeof user === 'object') {
+							var alias = user.alias || user.name || user.loginId;
+							spaceData.name = 'mySpace_of_' + user.loginId;
+							spaceData.alias = 'mySpace(' + alias + ')';
+							spaceData.type = 'personal';
+							return this.add(spaceData).then(function (space) {
+								//add user into admin of space
+								newSpace = space;
+								return UserRole.add({
+									userId: user._id,
+									role: 'admin',
+									spaceId: space._id
+								});
+							})
+								.then(function () {
+									//add appEngine for user space
+									return App.add(
+										{
+											"name": "appEngine",
+											"alias": "appEngine",
+											"type": "app.core",
+											"cores": {
+												"role": {
+													"grants": {
+														"admin": "adminSpaceRole|管理机构角色,adminUserRole|管理用户角色",
+														"everyone": "myRole|我的角色"
+													}
+												},
+												"space": {
+													"grants": {
+														"admin": [
+															{
+																"name": "adminSpace",
+																"alias": "机构设置"
+															},
+															{
+																"name": "appStore",
+																"alias": "应用商店"
+															}
+														]
+													}
+												},
+												"collab": {
+													"grants": {
+														"admin": ["adminCollab|设置协作"],
+														"manager": ["manageCollab|管理协作"],
+														"everyone": "collabNuts|协作功能"
+													}
+												},
+												"circle": {
+													"grants": {
+														"admin": ["adminCircle|设置机构圈"],
+														"manager": ["manageCircle|管理机构圈"],
+														"everyone": ["circleMember|机构圈主页"]
+													}
+												}
+											}
+										}, newSpace._id
+									);
+								})
+								.then(function () {
+									//add personApp for user space
+									return App.add(
+										{
+											"name": "personApp",
+											"alias": "Person App",
+											"type": "app.core",
+											"cores": {
+												"user": {
+													"grants": {
+														"admin": "adminUser, myProfile"
+													}
+												}
+											}
+										}, newSpace._id
+									);
+								})
+								.then(function () {
+									return newSpace;
+								})
+						}*/
+				},
 			},
 			instanceMethods: {
 
