@@ -55,9 +55,17 @@
 				"user": {
 					"preload": true,
 					"grants": {
-						"admin": "adminUser",
-						"member": "userMember",
-						"customer": "userCustomer"
+						"admin": ["myProfile"]
+					}
+				},
+				"myFinance":{
+					"grants": {
+						"admin": ["myCard"]
+					}
+				},
+				"myTrade":{
+					"grants": {
+						"admin": ["myOrder","myHistory"]
 					}
 				}
 			}
@@ -93,11 +101,11 @@
 			"alias": "机构金融",
 			"type": "app.normal",
 			"nuts": {
-				"moneyAccount": {
+				"moneyCard": {
 					"grants": {
-						"admin": "adminAccount",
-						"member": "manageAccount",
-						"customer": "useAccount"
+						"admin": "adminCard",
+						"member": "manageCard",
+						"client": "useCard"
 					}
 				}
 			}
@@ -110,7 +118,7 @@
 					"grants": {
 						"admin": "adminProduct",
 						"member": "manageProduct",
-						"customer": "customerProduct"
+						"client": "clientProduct"
 					}
 				},
 				"price": {
@@ -129,14 +137,14 @@
 					"grants": {
 						"admin": "adminOrder",
 						"member": "manageOrder",
-						"customer": "customerOrder"
+						"client": "clientOrder"
 					}
 				},
 				"trade": {
 					"grants": {
 						"admin": "adminTrade",
 						"member": "manageTrade",
-						"customer": "customerTrade"
+						"client": "clientTrade"
 					}
 				}
 			}
