@@ -38,14 +38,6 @@ angular.module('billynApp.core')
                 ncyBreadcrumb: { label: '加入机构' },
                 authenticate: true
             })
-            .state('pc.profile', {
-                url: '/profile',
-                templateUrl: 'components/blyn/core/dash/view/profile.html',
-                authenticate: true,
-                ncyBreadcrumb: "个人档案",
-                controller: 'MyProfileController',
-                controllerAs: 'vm'
-            })
             .state('mobile.dashboard', {
                 url: '/dashboard',
                 templateUrl: 'components/blyn/core/dash/view/listMessage.mobile.html',
