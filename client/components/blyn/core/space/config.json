@@ -23,21 +23,24 @@
 		}
 	},
 	"types": {
-		"normal": {
+		"com.normal": {
 			"name": "normal",
 			"alias": "普通机构",
 			"description": "普通机构",
 			"roles": [
 				{
-					"name": "admin"
+					"name": "admin",
+					"alias": "系统管理员"
 				},
 				{
-					"name": "member"
+					"name": "member",
+					"alias": "机构成员"
 				},
 				{
-					"name": "public",
+					"name": "client",
+					"alias": "机构客户",
 					"grants": {
-						"member": "allow.apply"
+						"public": "allow.join.auto"
 					}
 				}
 			],
@@ -45,37 +48,55 @@
 				"weMember"
 			]
 		},
-		"agent.finance.com": {
-			"name": "agent.finance.com",
-			"alias": "金融服务机构",
-			"description": "专注于金融服务的公司",
+		"com.myCube": {
+			"name": "com.myCube",
+			"alias": "我立方机构",
+			"description": "管理我立方平台的机构",
 			"roles": [
-				"admin"
+				{
+					"name": "admin",
+					"alias": "系统管理员"
+				},
+				{
+					"name": "member",
+					"alias": "机构成员"
+				},
+				{
+					"name": "client",
+					"alias": "机构客户",
+					"grants": {
+						"public": "allow.join.auto"
+					}
+				}
 			],
 			"apps": [
-				"financeAgent"
+				"weProduct","weFinance","weTrade"
 			]
 		},
-		"data.finance.com": {
-			"name": "data.finance.com",
-			"alias": "金融数据服务机构",
-			"description": "专注于提供准确，全面，快速的金融数据",
-			"roles": [
-				"admin"
-			],
+		"person.myCube": {
+			"name": "person.myCube",
+			"alias": "个人空间",
+			"description": "个人空间",
 			"apps": [
-				"financeData"
+				"userApp"
 			]
-		},
-		"assessment.property.com": {
-			"name": "assessment.property.com",
-			"alias": "资产评估机构",
-			"description": "专注于提供权威的，全面的，及时的资产评估数据和报告",
-			"roles": [
-				"admin"
+		}
+	},
+	"userSpaces": {
+		"users": {
+			"admin@myCube.com": [
+				{
+					"spaceData": {
+						"name": "myCube.com",
+						"alias": "我立方机构",
+						"type": "com.myCube"
+					},
+					"joinRole": "admin",
+					"joinStatus": "created"
+				}
 			],
-			"apps": [
-				"propertyAssessment"
+			"all": [
+				
 			]
 		}
 	}
