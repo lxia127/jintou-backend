@@ -119,6 +119,10 @@ export default function (sequelize, DataTypes) {
               .spread(function (entity, created) {
                 //console.log('getRoleRoot created: ', created);
                 return Promise.resolve(entity);
+              })
+              .catch(function(error){
+                Console.log('error:',error);
+                return Promise.reject(error);
               });
           });
         },
@@ -232,7 +236,15 @@ export default function (sequelize, DataTypes) {
           var treeObj = new TreeTable();
           return this.getRoleRoot(context).then(function (root) {
             //console.log('getRoleRoot:', JSON.stringify(root));
-            return treeObj.addChild(root, context);
+            //console.log('getRoleRoot context:', JSON.stringify(context));
+            return treeObj.addChild(root, context)
+            .then(function(role){
+              //console.log('addRole child:', JSON.stringify(role));
+              return Promise.resolve(role);
+            })
+            .catch(function(error){
+              console.log("error in add role:",error);
+            });
           });
         },
         add: function (roleData) {

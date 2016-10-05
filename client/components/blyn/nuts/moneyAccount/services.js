@@ -2,7 +2,7 @@
 
 (function () {
 
-	function SpaceService($resource, User, $q, Util, BApp, $rootScope, BRole, BCircle, $http) {
+	function MoneyAccountService($resource, User, $q, Util, BApp, $rootScope, BRole, BCircle, $http) {
 		var safeCb = Util.safeCb;
 		var current = {};
 		var resSpace = $resource('/api/spaces/:id/:controller', {
@@ -50,8 +50,8 @@
 
 		var service = {};
 
-		service.getAllSpaces = function () {
-			return $resource('/api/spaces/').query().$promise;
+		service.getAccount = function (data) {
+			return $q.when(data);
 		}
 		service.getUserSpaces = function (findData, callback) {
 			//get: /api/spaces/user
@@ -575,7 +575,7 @@
 								angular.forEach(spaceTypes, function (oType, key) {
 									if (oUserData.spaceData && oUserData.spaceData.type === key) {
 										oUserData.spaceData.type = oType;
-									}
+									}									
 								})
 								listUserData.push(oUserData);
 							})
@@ -619,17 +619,9 @@
 				var users = configUserSpaces.users;
 				var uLoginId = user.loginId;
 
-				var createList = [];
-				if (configUserSpaces.users.hasOwnProperty('all')) {
-					createList = createList.concat(configUserSpaces.users['all']);
-				}
-
 				if (configUserSpaces.users.hasOwnProperty(uLoginId)) {
-					createList = createList.concat(configUserSpaces.users[uLoginId]);
-				}
-
-				if (createList.length > 0) {
-					return that.batchAddUserSpace(createList);
+					var createDataList = configUserSpaces.users[uLoginId];
+					return that.batchAddUserSpace(createDataList);
 				} else {
 					return $q.when(null);
 				}
@@ -653,6 +645,6 @@
 
 
 	angular.module('billynApp.core')
-		.factory('BSpace', SpaceService);
+		.factory('BMoneyAccount', MoneyAccountService);
 
 })();

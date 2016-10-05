@@ -2,7 +2,7 @@
 
 (function () {
 
-    function BUserService($resource, User, $q, Util, $rootScope,$http) {
+    function BMyTradeService($resource, User, $q, Util, $rootScope,$http) {
         var safeCb = Util.safeCb;
         var current = {};
         var resUser = $resource('/api/users/:id/:controller', {
@@ -248,7 +248,7 @@
     }
 
     angular.module('billynApp.core')
-        .factory('BUser', BUserService);
+        .factory('BMyTrade', BMyTradeService);
 
 })();
 
