@@ -13,14 +13,6 @@ angular.module('billynApp.core')
         controllerAs: 'vm',
         ncyBreadcrumb: {label:'用户管理'}
       })
-      .state('pc.space.app.user.myprofile', {
-        url: '/myprofile',
-        templateUrl: 'components/blyn/core/user/view/myprofile.html',
-        controller: 'MyProfileController',
-        controllerAs: 'vm',
-        ncyBreadcrumb: {label:'我的档案'},
-        authenticate: true
-      })
       .state('pc.space.app.user.home', {
         url: '/home',
         templateUrl: 'components/blyn/core/user/view/userHome.html',

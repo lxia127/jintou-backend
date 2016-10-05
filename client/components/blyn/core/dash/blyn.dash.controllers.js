@@ -45,9 +45,6 @@
             alert("exit space: " + this.currentSpace._id);
         }
 
-        showUserProfile(){
-            ctrl.$state.goto('pc.profile');
-        }
     }
 
     class CreateSpaceController {
@@ -195,10 +192,7 @@
 
     }
 
-    class MyProfileController{}
-
     angular.module('billynApp.core')
-        .controller('MyProfileController', MyProfileController)
         .controller('ListMessageController', ListMessageController)
         .controller('CreateSpaceController', CreateSpaceController)
         .controller('JoinSpaceController', JoinSpaceController);
