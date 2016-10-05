@@ -398,7 +398,7 @@ export function findUserSpaces(req, res) {
         Space.belongsTo(Category, { as: 'type' });
         //console.log(1);
         Space.hasMany(Role, { as: 'roles', foreignKey: 'spaceId' });
-        Space.hasMany(UserRole, { as: 'userRoles'});
+        Space.hasMany(UserRole, { as: 'userRoles' });
         //console.log(2);
         Role.belongsToMany(User, { through: 'UserRole', as: 'users' });
         //console.log(3);
@@ -435,11 +435,11 @@ export function findUserSpaces(req, res) {
         var joinStatus = ['joined'];
         if (req.query.joinStatus) {
             //console.log('joinStatus', joinStatus);
-            if(typeof req.query.joinStatus === 'array'){
+            if (typeof req.query.joinStatus === 'array') {
                 joinStatus = req.query.joinStatus;
             }
-            if(typeof req.query.joinStatus === 'string'){
-                if(!joinStatus.includes(req.query.joinStatus)){
+            if (typeof req.query.joinStatus === 'string') {
+                if (!joinStatus.includes(req.query.joinStatus)) {
                     joinStatus.push(req.query.joinStatus);
                 }
             }
@@ -548,15 +548,22 @@ export function userJoin(req, res) {
     var spaceId = req.body.spaceId;
     var userId = req.body.userId;
     var joinStatus = 'applying';
+    var joinRole = 'member';
     //  console.log("User " + userId + " request to join space " + spaceId);
 
     if (req.body.joinStatus) {
-        var jStatus = req.body.joinStatus;
-        if (['applying', 'following', 'joined'].includes(jStatus)) {
-            joinStatus = jStatus;
-        }
+        var joinStatus = req.body.joinStatus;
     }
 
+    if (req.body.joinRole) {
+        var joinRole = req.body.joinRole;
+    }
+
+    return Space.addUserSpace(userId, spaceId, joinRole, joinStatus)
+        .then(respondWithResult(res))
+        .catch(handleError(res));
+
+    /*
     return Role.add({
         spaceId: spaceId,
         name: "member"
@@ -576,7 +583,7 @@ export function userJoin(req, res) {
             return Promise.resolve(entity);
         }).then(respondWithResult(res))
             .catch(handleError(res));
-    })
+    })*/
 }
 
 
@@ -677,4 +684,80 @@ export function findAllJoinableSpace(req, res) {
         .then(respondWithResult(res))
         .catch(handleError(res));
 }
+
+/**
+ * format of req.body
+ * [
+ *  {   
+ *      user: (loginId or userId or user object),
+ *      spaceData: {
+ *             name: xxx,
+        *      alias: xxx,
+        *      roles: [
+        *                  {
+        *                      name: xxxx
+        *                  }
+        *              ],
+        *      apps: [
+        *          {
+        *              name: xxxx,
+        *              ....
+        *          }
+        *      ]
+        *  },
+        joinRole: (roleId or roleName or role object),
+        joinStatus: (applying|joined|following)
+ *      
+ * }
+ * ]
+ */
+export function batchAddUserSpace(req, res) {
+    var listAddData = [];
+    var spaces = [];
+    var userId;
+    
+    if(req.user){
+        userId = req.user._id;
+    }
+
+    if(req.body && req.body.userId){
+        userId = req.body.userId;
+    }
+
+    if(req.query && req.query.userId){
+        userId = req.query.userId;
+    }
+
+    //console.log('userId:',userId);
+    //console.log('req.body:',JSON.stringify(req.body));
+
+    if (req.body.spaces && Array.isArray(req.body.spaces)) {
+        req.body.spaces.forEach(function (item, index) {
+            var itemName = item.spaceData.name.toLowerCase();
+            //appEngine and userApp can not add by this way
+            if (itemName !== 'appengine' && itemName != 'userapp') {
+                listAddData.push(item);
+            }
+        });
+
+        //console.log('listAddData:',listAddData);
+        return Promise.each(listAddData, function (addData) {
+            var roleData = addData.joinRole || 'member';
+            var joinStatus = addData.joinStatus || 'applying';
+            //console.log('addData:',addData);
+            return Space.addUserSpace(userId, addData.spaceData, roleData, joinStatus).then(function (space) {
+                //console.log('new space:',JSON.stringify(space));
+                spaces.push(space);               
+                return Promise.resolve(space);
+            })
+        }).then(function(){
+            //console.log('spaces:',JSON.stringify(spaces));
+            return Promise.resolve(spaces);
+        })
+            .then(respondWithResult(res))
+            .catch(handleError(res));
+    } else {
+        res.status(500).send('please check input!');
+    }
+} 
 
