@@ -41,9 +41,10 @@ angular.module('billynApp.core')
             .state('pc.profile', {
                 url: '/profile',
                 templateUrl: 'components/blyn/core/dash/view/profile.html',
-                authenticate: true
-                //controller: 'blyn.home.profile.showController',
-                //controllerAs: 'showProfile'
+                authenticate: true,
+                ncyBreadcrumb: "个人档案",
+                controller: 'MyProfileController',
+                controllerAs: 'vm'
             })
             .state('mobile.dashboard', {
                 url: '/dashboard',

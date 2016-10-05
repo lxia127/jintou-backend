@@ -3,12 +3,13 @@
 (function () {
 
     class ListMessageController {
-        constructor($q, Auth, BSpace, BApp, BNut) {
+        constructor($q, $state, Auth, BSpace, BApp, BNut) {
             // Use the User $resource to fetch all users
             //this.users = User.query();
 
             var ctrl = this;
             this.recommends = [1, 2, 3, 4, 5];
+            ctrl.$state = $state;
 
             // todo 查询指定user下的spaces数据
             var user = Auth.getCurrentUser();
@@ -42,6 +43,10 @@
 
         exitSpace() {
             alert("exit space: " + this.currentSpace._id);
+        }
+
+        showUserProfile(){
+            ctrl.$state.goto('pc.profile');
         }
     }
 
@@ -190,7 +195,10 @@
 
     }
 
+    class MyProfileController{}
+
     angular.module('billynApp.core')
+        .controller('MyProfileController', MyProfileController)
         .controller('ListMessageController', ListMessageController)
         .controller('CreateSpaceController', CreateSpaceController)
         .controller('JoinSpaceController', JoinSpaceController);
