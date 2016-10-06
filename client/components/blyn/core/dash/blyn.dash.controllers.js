@@ -45,6 +45,10 @@
             alert("exit space: " + this.currentSpace._id);
         }
 
+        goto(state){
+            this.$state.go(state);
+        }
+
     }
 
     class CreateSpaceController {
