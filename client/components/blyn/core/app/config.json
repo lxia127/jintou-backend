@@ -101,11 +101,11 @@
 			"alias": "机构金融",
 			"type": "app.normal",
 			"nuts": {
-				"moneyCard": {
+				"money": {
 					"grants": {
-						"admin": "adminCard",
-						"member": "manageCard",
-						"client": "useCard"
+						"admin": "admin",
+						"manager": "manage",
+						"client": "client"
 					}
 				}
 			}
