@@ -1,8 +1,8 @@
 {
     "type":"nut.core",
 	"permits": {
-		"myProfile": {
-			"alias": "my profile"
+		"moneyCard": {
+			"alias": "money card"
 		}
 	}
 }
