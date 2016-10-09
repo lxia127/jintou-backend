@@ -15,7 +15,7 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.product.admin', {
         url: '/admin',
-        templateUrl: 'components/blyn/core/product/view/admin.html',
+        templateUrl: 'components/blyn/nuts/product/view/admin.html',
         controller: 'ProductAdminController',
         controllerAs: 'vm',
         ncyBreadcrumb: { label: '设置' },
@@ -30,14 +30,14 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.product.manage.home', {
         url: '/home',
-        templateUrl: 'components/blyn/core/product/view/manage.html',
+        templateUrl: 'components/blyn/nuts/product/view/manage.html',
         controller: 'ProductManageController',
         controllerAs: 'vm',
         ncyBreadcrumb: { skip: true }
       })
       .state('pc.space.app.product.manage.addProduct', {
         url: '/approve',
-        templateUrl: 'components/blyn/core/product/view/addProduct.html',
+        templateUrl: 'components/blyn/nuts/product/view/addProduct.html',
         controller: 'ProductManageController',
         controllerAs: 'vm',
         ncyBreadcrumb: { label: '添加修改' },
@@ -53,7 +53,7 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.product.client.home', {
         url: '/home',
-        templateUrl: 'components/blyn/core/product/view/client.html',
+        templateUrl: 'components/blyn/nuts/product/view/client.html',
         controller: 'ProductClientController',
         controllerAs: 'vm',
         ncyBreadcrumb: { skip: true },
@@ -69,7 +69,7 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.product.item.home', {
         url: '/home',
-        templateUrl: 'components/blyn/core/product/view/item.html',
+        templateUrl: 'components/blyn/nuts/product/view/item.html',
         controller: 'ProductItemController',
         controllerAs: 'vm',
         ncyBreadcrumb: { skip: true },

@@ -15,7 +15,7 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.trade.admin', {
         url: '/admin',
-        templateUrl: 'components/blyn/core/trade/view/admin.html',
+        templateUrl: 'components/blyn/nuts/trade/view/admin.html',
         controller: 'TradeAdminController',
         controllerAs: 'vm',
         ncyBreadcrumb: { label: '设置' },
@@ -30,14 +30,14 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.trade.manage.home', {
         url: '/home',
-        templateUrl: 'components/blyn/core/trade/view/manage.html',
+        templateUrl: 'components/blyn/nuts/trade/view/manage.html',
         controller: 'TradeManageController',
         controllerAs: 'vm',
         ncyBreadcrumb: { skip: true }
       })
       .state('pc.space.app.trade.manage.approve', {
         url: '/approve',
-        templateUrl: 'components/blyn/core/trade/view/approve.html',
+        templateUrl: 'components/blyn/nuts/trade/view/approve.html',
         controller: 'TradeManageController',
         controllerAs: 'vm',
         ncyBreadcrumb: { label: '批准' },
@@ -52,21 +52,21 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.trade.client.home', {
         url: '/home',
-        templateUrl: 'components/blyn/core/trade/view/client.html',
+        templateUrl: 'components/blyn/nuts/trade/view/client.html',
         controller: 'TradeClientController',
         controllerAs: 'vm',
         ncyBreadcrumb: { skip: true }
       })
       .state('pc.space.app.trade.client.list', {
         url: '/list',
-        templateUrl: 'components/blyn/core/trade/view/list.html',
+        templateUrl: 'components/blyn/nuts/trade/view/list.html',
         controller: 'TradeClientController',
         controllerAs: 'vm',
         ncyBreadcrumb: { label: '商品列表' },
       })
       .state('pc.space.app.trade.client.history', {
         url: '/history',
-        templateUrl: 'components/blyn/core/trade/view/history.html',
+        templateUrl: 'components/blyn/nuts/trade/view/history.html',
         controller: 'TradeClientController',
         controllerAs: 'vm',
         ncyBreadcrumb: { label: '交易记录' },
@@ -81,7 +81,7 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.trade.item.home', {
         url: '/home',
-        templateUrl: 'components/blyn/core/trade/view/item.html',
+        templateUrl: 'components/blyn/nuts/trade/view/item.html',
         controller: 'TradeItemController',
         controllerAs: 'vm',
         ncyBreadcrumb: { skip: true },

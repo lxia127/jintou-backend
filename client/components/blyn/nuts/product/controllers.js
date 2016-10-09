@@ -33,9 +33,9 @@
   }
 
   angular.module('billynApp.core')
-    .controller('ProductController', MoneyController)
-    .controller('ProductAdminController', MoneyAdminController)
-    .controller('ProductManageController', MoneyManageController)
-    .controller('ProductClientController', MoneyClientController)
-    .controller('ProductItemController', MoneyAccountController)
+    .controller('ProductController', ProductController)
+    .controller('ProductAdminController', ProductAdminController)
+    .controller('ProductManageController', ProductManageController)
+    .controller('ProductClientController', ProductClientController)
+    .controller('ProductItemController', ProductItemController);
 })();
