@@ -102,8 +102,19 @@ export function index(req, res) {
  */
 export function create(req, res, next) {
   var newUser = User.build(req.body);
+  var invitor, inviteSpace;
   newUser.setDataValue('provider', 'local');
   newUser.setDataValue('role', 'user');
+  console.log('body:',JSON.stringify(req.body));
+  if (req.body.inviteCode) {
+    var inviteCode = req.body.inviteCode;
+    var sVars = inviteCode.split('@');
+    //console.log('sVars:',JSON.stringify(sVars));
+    inviteSpace = sVars[0];
+    if (sVars[1]) {
+      invitor = sVars[1];
+    }
+  }
   return newUser.save()
     .then(function (user) {
       newUser = user;
@@ -160,8 +171,24 @@ export function create(req, res, next) {
           }
         ]
       }
-      return Space.addUserSpace(user, mySpaceData, 'admin', 'joined');
-    }).then(function (data) {
+      //console.log('before addUserSpace:',JSON.stringify(mySpaceData));
+      //console.log('inviteSpace:',inviteSpace);
+      return Space.addUserSpace(user, mySpaceData, 'admin', 'created');
+    })
+    .then(function () { //join space by inviteCode
+      //console.log('after addUserSpace:');
+      //console.log('inviteSpace:',inviteSpace);
+      if (inviteSpace) {
+        return Space.getSpace(inviteSpace).then(function (space) {
+          //console.log('after getSpace--space:',JSON.stringify(space));
+          //console.log('after getSpace--user:',JSON.stringify(newUser));
+          return Space.addUserSpace(newUser, space, 'everyone', 'joined', invitor);
+        })
+      } else {
+        return Promise.resolve(null);
+      }
+    })
+    .then(function (data) {
       //console.log('in create user:',JSON.stringify(data));
       var token = jwt.sign({ _id: newUser._id }, config.secrets.session, {
         expiresIn: 60 * 60 * 5

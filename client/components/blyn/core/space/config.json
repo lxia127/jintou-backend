@@ -45,7 +45,7 @@
 				}
 			],
 			"apps": [
-				"weMember"
+				"appEngine","weMember"
 			]
 		},
 		"com.myCube": {
@@ -70,7 +70,7 @@
 				}
 			],
 			"apps": [
-				"weProduct","weFinance","weTrade"
+				"appEngine","weProduct","weFinance","weTrade"
 			]
 		},
 		"person.myCube": {
@@ -78,7 +78,7 @@
 			"alias": "个人空间",
 			"description": "个人空间",
 			"apps": [
-				"userApp"
+				"appEngine","userApp"
 			]
 		}
 	},
@@ -94,9 +94,6 @@
 					"joinRole": "admin",
 					"joinStatus": "created"
 				}
-			],
-			"all": [
-				
 			]
 		}
 	}
