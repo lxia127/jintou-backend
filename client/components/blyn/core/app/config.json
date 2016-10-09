@@ -116,15 +116,15 @@
 			"nuts": {
 				"product": {
 					"grants": {
-						"admin": "adminProduct",
-						"member": "manageProduct",
-						"client": "clientProduct"
+						"admin": "admin",
+						"member": "manage",
+						"client": "client"
 					}
 				},
 				"price": {
 					"grants": {
-						"admin": "adminPrice",
-						"member": "managePrice"
+						"admin": "admin",
+						"member": "manage"
 					}
 				}
 			}
@@ -135,16 +135,16 @@
 			"nuts": {
 				"order": {
 					"grants": {
-						"admin": "adminOrder",
-						"member": "manageOrder",
-						"client": "clientOrder"
+						"admin": "admin",
+						"manage": "manage",
+						"client": "client"
 					}
 				},
 				"trade": {
 					"grants": {
-						"admin": "adminTrade",
-						"member": "manageTrade",
-						"client": "clientTrade"
+						"admin": "admin",
+						"member": "manage",
+						"client": "client"
 					}
 				}
 			}

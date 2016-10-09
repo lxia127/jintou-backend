@@ -1,17 +1,14 @@
 {
-	"type": "nut.normal",
+    "type":"nut.core",
 	"permits": {
-		"manageOwnerProperty": {
-			"alias": "管理个人资产"
+		"admin": {
+			"alias": "admin money stuff"
 		},
-		"ownerProfile": {
-			"alias": "个人档案"
+		"manage": {
+			"alias": "manage money stuff"
 		},
-		"propertyEvaluation": {
-			"alias": "资产评估"
-		},
-		"propertyReport": {
-			"alias": "资产报告"
+		"client": {
+			"alias": "money stuff for client"
 		}
 	}
 }
