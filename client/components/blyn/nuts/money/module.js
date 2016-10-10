@@ -3,7 +3,7 @@
 angular.module('billynApp.core')
   .config(function ($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.when('/pc/space/:spaceId/app/:appId/myfinance/:nutId', '/pc/space/:spaceId/app/:appId/myfinance/:nutId/home');
+    $urlRouterProvider.when('/pc/space/:spaceId/app/:appId/money/:nutId', '/pc/space/:spaceId/app/:appId/money/:nutId/home');
 
     $stateProvider
       .state('pc.space.app.money', {
@@ -15,7 +15,7 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.money.admin', {
         url: '/admin',
-        templateUrl: 'components/blyn/core/money/view/admin.html',
+        templateUrl: 'components/blyn/nuts/money/view/admin.html',
         controller: 'MoneyAdminController',
         controllerAs: 'vm',
         ncyBreadcrumb: { label: '设置' },
@@ -30,14 +30,14 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.money.manage.home', {
         url: '/home',
-        templateUrl: 'components/blyn/core/money/view/manage.html',
+        templateUrl: 'components/blyn/nuts/money/view/manage.html',
         controller: 'MoneyManageController',
         controllerAs: 'vm',
         ncyBreadcrumb: { skip: true }
       })
       .state('pc.space.app.money.manage.approve', {
         url: '/approve',
-        templateUrl: 'components/blyn/core/money/view/approve.html',
+        templateUrl: 'components/blyn/nuts/money/view/approve.html',
         controller: 'MoneyManageController',
         controllerAs: 'vm',
         ncyBreadcrumb: { label: '批准' },
@@ -52,14 +52,14 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.money.client.home', {
         url: '/home',
-        templateUrl: 'components/blyn/core/money/view/client.html',
+        templateUrl: 'components/blyn/nuts/money/view/client.html',
         controller: 'MoneyManageController',
         controllerAs: 'vm',
         ncyBreadcrumb: { skip: true }
       })
       .state('pc.space.app.money.client.applyAccount', {
         url: '/apply',
-        templateUrl: 'components/blyn/core/money/view/applyAccount.html',
+        templateUrl: 'components/blyn/nuts/money/view/applyAccount.html',
         controller: 'MoneyClientController',
         controllerAs: 'vm',
         ncyBreadcrumb: { label: '申请账号' },
@@ -67,7 +67,7 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.money.client.applyCard', {
         url: '/apply',
-        templateUrl: 'components/blyn/core/money/view/applyCard.html',
+        templateUrl: 'components/blyn/nuts/money/view/applyCard.html',
         controller: 'MoneyClientController',
         controllerAs: 'vm',
         ncyBreadcrumb: { label: '申请卡' },
@@ -83,7 +83,7 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.money.account.home', {
         url: '/home',
-        templateUrl: 'components/blyn/core/money/view/account.html',
+        templateUrl: 'components/blyn/nuts/money/view/account.html',
         controller: 'MoneyAccountController',
         controllerAs: 'vm',
         ncyBreadcrumb: { skip: true },
@@ -99,7 +99,7 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.money.card.home', {
         url: '/home',
-        templateUrl: 'components/blyn/core/money/view/card.html',
+        templateUrl: 'components/blyn/nuts/money/view/card.html',
         controller: 'MoneyCardController',
         controllerAs: 'vm',
         ncyBreadcrumb: { skip: true },
