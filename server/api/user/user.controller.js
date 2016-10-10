@@ -113,7 +113,7 @@ export function create(req, res, next) {
   console.log('body:',JSON.stringify(req.body));
   if (req.body.inviteCode) {
     var inviteCode = req.body.inviteCode;
-    var sVars = inviteCode.split('@');
+    var sVars = inviteCode.split('#');
     //console.log('sVars:',JSON.stringify(sVars));
     inviteSpace = sVars[0];
     if (sVars[1]) {
@@ -195,7 +195,11 @@ export function create(req, res, next) {
         return Space.getSpace(inviteSpace).then(function (space) {
           //console.log('after getSpace--space:',JSON.stringify(space));
           //console.log('after getSpace--user:',JSON.stringify(newUser));
-          return Space.addUserSpace(newUser, space, 'everyone', 'joined', invitor);
+          if(space){
+            return Space.addUserSpace(newUser, space, 'member', 'joined', invitor);
+          } else {
+            return Promise.resolve(null);
+          }     
         })
       } else {
         return Promise.resolve(null);
