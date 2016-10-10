@@ -15,7 +15,8 @@ var formidable = require('formidable');
 var path = require('path');
 var fs = require('fs');
 var Jimp = require('jimp');
-var profilePath = "/Users/hahi/Desktop/backend/jintou-backend/client/assets/profileImages";
+// var profilePath = "/Users/hahi/Desktop/backend/jintou-backend/client/assets/profileImages";
+var profilePath = __dirname.split("server")[0] + "/client/assets/profileImages";
 
 function respondWithResult(res, statusCode) {
 

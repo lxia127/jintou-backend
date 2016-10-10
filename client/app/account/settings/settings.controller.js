@@ -39,7 +39,7 @@ class ProfileController {
     this.currentUser = user;
     //console.log('$rootScope.current.user:',$rootScope.current.user);
   }
-  uploadImage($http){
+  uploadImage(){
     var f = document.getElementById('profile_image').files[0];
 
     var uploadUrl = "/assets/images/";
