@@ -6,7 +6,6 @@ class SignupController {
   error = {};
   submitted = false;
   //end-non-standard
-
   constructor(Auth, $state) {
     this.Auth = Auth;
     this.$state = $state;
@@ -15,7 +14,7 @@ class SignupController {
 
   register(form) {
     this.submitted = true;
-    
+
     if (form.$valid) {
       this.registering = true;
       this.Auth.createUser({
