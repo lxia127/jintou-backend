@@ -37,21 +37,26 @@ class ProfileController {
     var user = Auth.getCurrentUser();
     $rootScope.current.user = user;
     this.currentUser = user;
+    this.http = $http;
+    this.iconPath = "assets/profileImages/" + this.currentUser.loginId +"_icon.png";
+    var that = this;
     //console.log('$rootScope.current.user:',$rootScope.current.user);
   }
   uploadImage(){
     var f = document.getElementById('profile_image').files[0];
 
-    var uploadUrl = "/assets/images/";
+    var uploadUrl = "/api/users/profileImage";
     var fd = new FormData();
     fd.append('file', f);
-    $http.post(uploadUrl,fd, {
+    fd.append('id',this.currentUser.loginId);
+    this.http.post(uploadUrl,fd, {
         transformRequest: angular.identity,
         headers: {'Content-Type': undefined}
     })
-    .success(function(){
+    .success($.proxy(function(data){
       console.log("success!!");
-    })
+      this.iconPath = this.iconPath + "?_ts=" + new Date().getTime();
+    },this))
     .error(function(){
       console.log("error!!");
     });

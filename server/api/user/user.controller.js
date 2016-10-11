@@ -200,7 +200,7 @@ export function create(req, res, next) {
             return Space.addUserSpace(newUser, space, 'member', 'joined', invitor);
           } else {
             return Promise.resolve(null);
-          }     
+          }
         })
       } else {
         return Promise.resolve(null);
@@ -500,21 +500,27 @@ export function profileImage(req, res){
   form.uploadDir = profilePath;
 
   // every time a file has been uploaded successfully,
+  form.on('field',function(name, value){
+    if(name == "id"){
+        user = value;
+    }
+  });
   // rename it to it's orignal name
   form.on('file', function(field, file) {
     //var name = file.name + ".jpg";
     //res.send(name);
     var type = file.type.split("/")[1];
     // fs.rename(file.path, path.join(form.uploadDir, currentUser._id));
-    var id = req.query.id;
-    fs.rename(file.path, path.join(form.uploadDir,id + "." + type));
+    // var id = req.query.id;
+    fs.rename(file.path, path.join(form.uploadDir,user + "." + type));
     // res.end(id + "." + type);
     // open a file called "lenna.png"
-    Jimp.read(path.join(form.uploadDir,id + "." + type), function (err, image) {
+    Jimp.read(path.join(form.uploadDir,user + "." + type), function (err, image) {
         if (err) throw err;
         image.quality(100)                 // set JPEG quality
-             .write(path.join(form.uploadDir + "/"+ id + "_icon.png")); // save
+             .write(path.join(form.uploadDir + "/"+ user + "_icon.png")); // save
     });
+    res.status(200).send('upload succeed!');
 
   });
 
