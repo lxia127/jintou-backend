@@ -22,7 +22,7 @@ var refresh_token = "";
 var openid = "";
 
 var username = "";
- 
+
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -126,22 +126,22 @@ export function destroy(req, res) {
 
 export function index(req, res){
     //还要加验证程序，现在只是暂时让微信认证而已
-    
+
     if(req.query.echostr){
       res.send(req.query.echostr);
-    }    
+    }
     else{
-      res.send(req.query.echostr);
+      res.send("request not defined!");
       // res.send('<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx45a1e16368ad52ba&redirect_uri=http://e7a09da6.ngrok.io&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect">是这里</a>');
     }
 }
 
 export function create(req, res){
-    res.send('<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx45a1e16368ad52ba&redirect_uri=http://e7a09da6.ngrok.io&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect">是这里</a>');    
+    res.send('<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx45a1e16368ad52ba&redirect_uri=http://e7a09da6.ngrok.io&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect">是这里</a>');
 }
 
 export function wechatLogin(req, res){
-  // 
+  //
   // res.redirect("http://e7a09da6.ngrok.io");
   // res.send(req.query.code);
   if(req.query.code){
@@ -156,8 +156,8 @@ export function wechatLogin(req, res){
         url,
         function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                //get access_token  
-                var bodyObj = JSON.parse(body);         
+                //get access_token
+                var bodyObj = JSON.parse(body);
                 access_token = bodyObj.access_token;
                 refresh_token = bodyObj.refresh_token;//not using now
                 openid = bodyObj.openid;
@@ -178,7 +178,7 @@ export function wechatLogin(req, res){
 
             }
         }
-    );    
+    );
   }
 
 
@@ -186,7 +186,7 @@ export function wechatLogin(req, res){
 
 }
 export function wechatOauthRedirect(req,res){
-  var REDIRECT_URI = "http://e7a09da6.ngrok.io/wechatLogin";  
+  var REDIRECT_URI = "http://e7a09da6.ngrok.io/wechatLogin";
   var url = "https://open.weixin.qq.com/connect/oauth2/authorize?"+
             "appid="+APPID+
             "&redirect_uri="+REDIRECT_URI+
