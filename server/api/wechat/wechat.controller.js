@@ -131,7 +131,7 @@ export function index(req, res){
       res.send(req.query.echostr);
     }
     else{
-      res.send("request not defined!");
+      res.send("no");
       // res.send('<a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx45a1e16368ad52ba&redirect_uri=http://e7a09da6.ngrok.io&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect">是这里</a>');
     }
 }
