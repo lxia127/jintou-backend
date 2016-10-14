@@ -5,7 +5,7 @@
 		    <label for="" class="col-sm-2 control-label">头像</label>
 		    <div class="col-sm-10">
 		    	<!-- <img src="assets/images/a{{vm.currentUser._id%7}}.jpg" width="80" height="80"> -->
-          <img id="icon" ng-src="{{vm.iconPath}}" width="80" height="80">
+          <img id="icon" ng-src="{{vm.$scope.iconPath}}" width="80" height="80">
 		      <!-- <input id="profile_image" type="file" ng-model="vm.currentUser.profile_image" ng-change="vm.uploadImage(this)"> -->
           <input id="profile_image" type="file" onchange="angular.element(this).scope().vm.uploadImage()">
           <!-- <button type="submit" class="btn btn-primary" ng-click="vm.uploadImage()">upload</button> -->
