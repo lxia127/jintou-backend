@@ -1,5 +1,5 @@
 {
-    "type":"nut.core",
+    "type":"nut.normal",
 	"permits": {
 		"admin": {
 			"alias": "admin stuff"

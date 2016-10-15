@@ -3,8 +3,9 @@
 (function () {
 
   class ProductController {
-    constructor() {
-
+    constructor($state, $stateParams, $rootScope, BNut, BProduct) {
+      var ctrl = this;
+      this.nut = $rootScope.current.nut;
     }
   }
 

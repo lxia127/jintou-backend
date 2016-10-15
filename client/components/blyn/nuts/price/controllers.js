@@ -3,9 +3,10 @@
 (function () {
 
   class PriceController {
-    constructor() {
-
-    }
+    constructor($state, $stateParams, $rootScope, BNut, BPrice) {
+            var ctrl = this;
+            this.nut = $rootScope.current.nut;
+        }
   }
 
   class PriceAdminController {
