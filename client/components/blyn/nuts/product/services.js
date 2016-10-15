@@ -2,7 +2,7 @@
 
 (function () {
 
-    function BMoney($resource, User, $q, Util, $rootScope,$http) {
+    function BProduct($resource, User, $q, Util, $rootScope,$http) {
         var safeCb = Util.safeCb;
         var current = {};
         var resUser = $resource('/api/money/:id/:controller', {
@@ -248,7 +248,7 @@
     }
 
     angular.module('billynApp.core')
-        .factory('BMoney', BMoney);
+        .factory('BProduct', BProduct);
 
 })();
 

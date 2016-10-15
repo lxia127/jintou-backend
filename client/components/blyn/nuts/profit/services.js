@@ -2,10 +2,10 @@
 
 (function () {
 
-    function BMoney($resource, User, $q, Util, $rootScope, $http) {
+    function BProfit($resource, User, $q, Util, $rootScope, $http) {
         var safeCb = Util.safeCb;
         var current = {};
-        var resAccount = $resource('/api/money/accounts/:id/:controller', {
+        var resAccount = $resource('/api/profit/accounts/:id/:controller', {
             id: '@_id'
         }, {
                 queryUserAccounts: {
@@ -100,7 +100,7 @@
     }
 
     angular.module('billynApp.core')
-        .factory('BMoney', BMoney);
+        .factory('BProfit', BProfit);
 
 })();
 
