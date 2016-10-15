@@ -39,6 +39,10 @@
             this.currentSpace = {
                 _id: '', name: '', desc: ''
             };
+            setTimeout(function(){
+              $("#listImg").attr("src", $("#navImg").attr('src'));
+            },1000);
+
         }
 
         exitSpace() {
