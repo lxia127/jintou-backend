@@ -17,10 +17,10 @@ var validateJwt = expressJwt({
  */
 export function isAuthenticated() {
   //console.log('in isAuthenticated');
-  
+
   return compose()
     // Validate jwt
-    .use(function(req, res, next) {
+    .use(function (req, res, next) {
       //console.log('in isAuthenticated req.query:', req.query);
       // allow access_token to be passed through query parameter as well
       if (req.query && req.query.hasOwnProperty('access_token')) {
@@ -29,7 +29,7 @@ export function isAuthenticated() {
       validateJwt(req, res, next);
     })
     // Attach user to request
-    .use(function(req, res, next) {
+    .use(function (req, res, next) {
       return User.find({
         where: {
           _id: req.user._id
@@ -58,7 +58,7 @@ export function hasRole(roleRequired) {
     .use(isAuthenticated())
     .use(function meetsRequirements(req, res, next) {
       if (config.userRoles.indexOf(req.user.role) >=
-          config.userRoles.indexOf(roleRequired)) {
+        config.userRoles.indexOf(roleRequired)) {
         next();
       } else {
         res.status(403).send('Forbidden');
