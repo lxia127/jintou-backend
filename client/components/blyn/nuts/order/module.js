@@ -11,7 +11,7 @@ angular.module('billynApp.core')
         template: '<div ui-view=""></div>',
         controller: 'OrderController',
         controllerAs: 'vm',
-        ncyBreadcrumb: { label: '机构订单' }
+        ncyBreadcrumb: { label: '订单' }
       })
       .state('pc.space.app.order.admin', {
         url: '/admin',

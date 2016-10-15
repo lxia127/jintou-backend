@@ -133,14 +133,14 @@
 			"alias": "机构交易",
 			"type": "app.normal",
 			"nuts": {
-				"order": {
+				"trade": {
 					"grants": {
 						"admin": "admin",
-						"manage": "manage",
+						"member": "manage",
 						"client": "client"
 					}
 				},
-				"trade": {
+				"profit": {
 					"grants": {
 						"admin": "admin",
 						"member": "manage",

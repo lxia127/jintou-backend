@@ -3,8 +3,9 @@
 (function () {
 
   class TradeController {
-    constructor() {
-
+    constructor($state, $stateParams, $rootScope, BNut, BTrade) {
+      var ctrl = this;
+      this.nut = $rootScope.current.nut;
     }
   }
 
