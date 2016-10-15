@@ -12,7 +12,7 @@ angular.module('billynApp')
         templateUrl: 'components/layout/view/layout.html',
         controller: 'LayoutController',
         controllerAs: 'layout',
-        ncyBreadcrumb: {label:'个人空间'},
+        ncyBreadcrumb: {skip:true},
         resolve: {
           currentUser: function ($rootScope, Auth) {
             var currentUser = Auth.getCurrentUser();

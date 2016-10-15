@@ -11,7 +11,32 @@ angular.module('billynApp.core')
         template: '<div ui-view=""></div>',
         controller: 'ProductController',
         controllerAs: 'vm',
-        ncyBreadcrumb: { label: '机构产品' }
+        ncyBreadcrumb: { label: '产品' },
+        resolve:{
+          currentNut: function ($q, $stateParams, $rootScope, BNut, currentSpace) {
+            return $stateParams.nutId ?
+              BNut.find($stateParams.nutId).then(function (nut) {
+                $rootScope.current.nut = nut;
+                $rootScope.current.nut.permits = [];
+                BNut.findAllUserPermitNut($rootScope.current.app._id).then(function (permitNuts) {
+                  for (var i = 0; i < permitNuts.length; i++) {
+                    if (permitNuts[i].nut && permitNuts[i].nut.name === 'product') {
+                      $rootScope.current.nut.permits.push(permitNuts[i].permit);
+                    }
+                  }
+                });
+              }) :
+              $q.resolve('No nutId.');
+          }
+        }
+      })
+      .state('pc.space.app.product.home', {
+        url: '/home',
+        templateUrl: 'components/blyn/nuts/product/view/home.html',
+        controller: 'ProductController',
+        controllerAs: 'vm',
+        ncyBreadcrumb: { skip: true },
+        authenticate: true
       })
       .state('pc.space.app.product.admin', {
         url: '/admin',
