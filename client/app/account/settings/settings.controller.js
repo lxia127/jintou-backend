@@ -33,11 +33,41 @@ class SettingsController {
 }
 
 class ProfileController {
-  constructor(Auth, $rootScope) {
+  constructor(Auth, $rootScope, $http) {
     var user = Auth.getCurrentUser();
     $rootScope.current.user = user;
+    this.$scope = $rootScope;
     this.currentUser = user;
+    this.http = $http;
+    this.$scope.iconPath = "assets/profileImages/" + this.currentUser.loginId +"_icon.png"+ "?_ts=" + new Date().getTime();
+    var that = this;
     //console.log('$rootScope.current.user:',$rootScope.current.user);
+  }
+  uploadImage(){
+    var f = document.getElementById('profile_image').files[0];
+    var uploadUrl = "/api/users/profileImage";
+    var fd = new FormData();
+    fd.append('file', f);
+    fd.append('id',this.currentUser.loginId);
+    this.http.post(uploadUrl,fd, {
+        transformRequest: angular.identity,
+        headers: {'Content-Type': undefined}
+    })
+    .success($.proxy(function(data){
+      console.log("success!!");
+      setTimeout($.proxy(function(){
+        this.$scope.iconPath = "assets/profileImages/" + this.currentUser.loginId +"_icon.png" + "?_ts=" + new Date().getTime();
+        $("#navImg").attr("src", this.$scope.iconPath);    
+      },this), 1000);
+
+    },this))
+    .error(function(){
+      console.log("error!!");
+    });
+
+  }
+  uploadOnclick(){
+    this.value = null;
   }
 }
 
