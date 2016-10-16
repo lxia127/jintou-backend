@@ -3,6 +3,7 @@
 angular.module('billynApp')
   .config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.when('/pc/settings', '/pc/settings/profile');
+    $urlRouterProvider.when('/pc/account', '/pc/account/home');
 
     $stateProvider
       .state('login', {
@@ -34,8 +35,16 @@ angular.module('billynApp')
         template: '<div ui-view=""></div>',
         //controller: 'AccountController',
         //controllerAs: 'vm',
-        ncyBreadcrumb: {skip:true},
+        ncyBreadcrumb: {label:'个人空间'},
         authenticate: true
+      })
+      .state('pc.account.home', {
+          url: '/home',
+          templateUrl: 'components/blyn/core/dash/view/listMessage.html',
+          controller: 'ListMessageController',
+          controllerAs: 'listMessage',
+          ncyBreadcrumb: {skip:true},
+          authenticate: true
       })
       .state('pc.account.profile', {
         url: '/profile',

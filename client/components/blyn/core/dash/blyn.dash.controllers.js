@@ -80,7 +80,7 @@
             ];*/
 
             var that = this;
-            BSpace.getConfig().then(function (config) {
+            BSpace.loadConfig().then(function (config) {
                 that.spaceTypes = config.types;
             })
         }
