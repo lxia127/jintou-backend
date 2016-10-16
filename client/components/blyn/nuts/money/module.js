@@ -47,18 +47,19 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.money.manage', {
         url: '/manage',
-        template: '<div ui-view=""></div>',
+         templateUrl: 'components/blyn/nuts/money/view/manage.html',
+        //template: '<div ui-view=""></div>',
         controller: 'MoneyManageController',
         controllerAs: 'vm',
         ncyBreadcrumb: { label: '管理' }
       })
-      .state('pc.space.app.money.manage.home', {
-        url: '/home',
-        templateUrl: 'components/blyn/nuts/money/view/manage.html',
-        controller: 'MoneyManageController',
-        controllerAs: 'vm',
-        ncyBreadcrumb: { skip: true }
-      })
+      // .state('pc.space.app.money.manage.home', {
+      //   url: '/home',
+      //   templateUrl: 'components/blyn/nuts/money/view/manage.html',
+      //   controller: 'MoneyManageController',
+      //   controllerAs: 'vm',
+      //   ncyBreadcrumb: { skip: true }
+      // })
       .state('pc.space.app.money.manage.approve', {
         url: '/approve',
         templateUrl: 'components/blyn/nuts/money/view/approve.html',
@@ -69,18 +70,19 @@ angular.module('billynApp.core')
       })
       .state('pc.space.app.money.client', {
         url: '/client',
-        template: '<div ui-view=""></div>',
+      //  template: '<div ui-view=""></div>',
+       templateUrl: 'components/blyn/nuts/money/view/client.html',
         controller: 'MoneyClientController',
         controllerAs: 'vm',
         ncyBreadcrumb: { label: '客户' }
       })
-      .state('pc.space.app.money.client.home', {
-        url: '/home',
-        templateUrl: 'components/blyn/nuts/money/view/client.html',
-        controller: 'MoneyManageController',
-        controllerAs: 'vm',
-        ncyBreadcrumb: { skip: true }
-      })
+      // .state('pc.space.app.money.client.home', {
+      //   url: '/home',
+      //   templateUrl: 'components/blyn/nuts/money/view/client.html',
+      //   controller: 'MoneyManageController',
+      //   controllerAs: 'vm',
+      //   ncyBreadcrumb: { skip: true }
+      // })
       .state('pc.space.app.money.client.applyAccount', {
         url: '/apply',
         templateUrl: 'components/blyn/nuts/money/view/applyAccount.html',
