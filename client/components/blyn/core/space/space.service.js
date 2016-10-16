@@ -231,7 +231,7 @@
 		service.create = function (spaceData) {
 			var config, newSpace, theType;
 			var that = this;
-			return this.getConfig().then(function (conf) {
+			return this.loadConfig().then(function (conf) {
 				config = conf;
 				var types = config.types;
 				theType = types[spaceData.type];
@@ -250,7 +250,8 @@
 					apps.push('userApp');
 				} else {
 					if (theType.apps) {
-						theType.apps.forEach(function (appName) {
+						theType.apps.forEach(function (oApp) {
+							var appName = oApp.name;
 							if (appName.toLowerCase() != 'appengine') {
 								apps.push(appName);
 							}

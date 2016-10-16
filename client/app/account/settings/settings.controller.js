@@ -36,15 +36,15 @@ class ProfileController {
   constructor(Auth, $rootScope, $http) {
     var user = Auth.getCurrentUser();
     $rootScope.current.user = user;
+    this.$scope = $rootScope;
     this.currentUser = user;
     this.http = $http;
-    this.iconPath = "assets/profileImages/" + this.currentUser.loginId +"_icon.png";
+    this.$scope.iconPath = "assets/profileImages/" + this.currentUser.loginId +"_icon.png"+ "?_ts=" + new Date().getTime();
     var that = this;
     //console.log('$rootScope.current.user:',$rootScope.current.user);
   }
   uploadImage(){
     var f = document.getElementById('profile_image').files[0];
-
     var uploadUrl = "/api/users/profileImage";
     var fd = new FormData();
     fd.append('file', f);
@@ -55,7 +55,11 @@ class ProfileController {
     })
     .success($.proxy(function(data){
       console.log("success!!");
-      this.iconPath = this.iconPath + "?_ts=" + new Date().getTime();
+      setTimeout($.proxy(function(){
+        this.$scope.iconPath = "assets/profileImages/" + this.currentUser.loginId +"_icon.png" + "?_ts=" + new Date().getTime();
+        $("#navImg").attr("src", this.$scope.iconPath);    
+      },this), 1000);
+
     },this))
     .error(function(){
       console.log("error!!");
