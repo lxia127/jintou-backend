@@ -14,7 +14,7 @@
         <div class="col-sm-4">
           <div class="dashboard-user">
             <div class="dashboard-user-avatar" ng-click="listMessage.goto('pc.account.profile')">
-              <img src="assets/images/a{{listMessage.currentUser._id}}.jpg" alt="avatar">
+              <img id="listImg" src="assets/profileImages/{{listMessage.currentUser.loginId}}_icon.png" alt="avatar">
             </div>
             <div class="dashboard-user-desc">
               <span class="dashboard-user-hello">嗨，</span>
@@ -57,7 +57,7 @@
                 <a style="cursor: pointer" ui-sref="pc.space.home({spaceId: space._id})">
                   <i class="fa fa-windows"></i> {{space.alias}}
                 </a>
-                <span style="float: right"><i class="fa fa-power-off"></i> 
+                <span style="float: right"><i class="fa fa-power-off"></i>
                     <a href="#" data-toggle='modal' data-target='#exitSapceModal' ng-click="listMessage.currentSpace=space">退出角色</a>
                 </span>
 

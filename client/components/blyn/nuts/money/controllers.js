@@ -3,9 +3,10 @@
 (function () {
 
   class MoneyController {
-    constructor() {
-
-    }
+    constructor($state, $stateParams, $rootScope, BNut, BMoney) {
+            var ctrl = this;
+            this.nut = $rootScope.current.nut;
+        }
   }
 
   class MoneyAdminController {
