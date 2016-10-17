@@ -3,7 +3,12 @@
 angular.module('billynApp.core')
   .config(function ($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.when('/pc/space/:spaceId/app/:appId/product/:nutId', '/pc/space/:spaceId/app/:appId/product/:nutId/home');
+    $urlRouterProvider.when('/pc/space/:spaceId/app/:appId/product/:nutId', 
+    '/pc/space/:spaceId/app/:appId/product/:nutId/home');
+    $urlRouterProvider.when('/pc/space/:spaceId/app/:appId/product/:nutId/client', 
+    '/pc/space/:spaceId/app/:appId/product/:nutId/client/home');
+    $urlRouterProvider.when('/pc/space/:spaceId/app/:appId/product/:nutId/manage', 
+    '/pc/space/:spaceId/app/:appId/product/:nutId/manage/home');
 
     $stateProvider
       .state('pc.space.app.product', {
