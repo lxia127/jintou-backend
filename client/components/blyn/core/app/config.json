@@ -120,24 +120,24 @@
 						"member": "manage",
 						"client": "client"
 					}
-				},
-				"price": {
-					"grants": {
-						"admin": "admin",
-						"member": "manage"
-					}
-				}
+				}				
 			}
 		},
 		"weTrade": {
 			"alias": "机构交易",
 			"type": "app.normal",
 			"nuts": {
-				"trade": {
+				"sale": {
 					"grants": {
 						"admin": "admin",
 						"member": "manage",
 						"client": "client"
+					}
+				},
+				"price": {
+					"grants": {
+						"admin": "admin",
+						"member": "manage"
 					}
 				},
 				"profit": {
@@ -146,7 +146,7 @@
 						"member": "manage",
 						"client": "client"
 					}
-				}
+				}			
 			}
 		}		
 	}
