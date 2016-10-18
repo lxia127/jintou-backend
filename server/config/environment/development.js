@@ -3,7 +3,8 @@
 // Development specific configuration
 // ==================================
 module.exports = {
-
+//ip: '127.0.0.1',
+port:'80',
   // Sequelize connection opions
   sequelize: {
     uri: 'sqlite://',
