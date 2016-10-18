@@ -2,10 +2,10 @@
 
 (function () {
 
-    function BTrade($resource, User, $q, Util, $rootScope,$http) {
+    function BSale($resource, User, $q, Util, $rootScope,$http) {
         var safeCb = Util.safeCb;
         var current = {};
-        var resUser = $resource('/api/trade/:id/:controller', {
+        var resUser = $resource('/api/sale/:id/:controller', {
             id: '@_id'
         }, {
                 create: {
@@ -248,7 +248,7 @@
     }
 
     angular.module('billynApp.core')
-        .factory('BTrade', BTrade);
+        .factory('BSale', BSale);
 
 })();
 
