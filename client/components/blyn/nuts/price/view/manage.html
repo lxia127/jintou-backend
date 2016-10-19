@@ -1,2 +1,40 @@
-<h1>manage home</h1>
-<h3>for example ,list all accounts and cards for manage</h3>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <!--<small class="pull-right"><a ng-click="vm.showAddRole()" class="btn btn-xs btn-primary"><i class="fa fa-user-plus"></i> 申请新角色</a></small>-->
+                    <h5><strong>价格列表</strong></h5>
+                </div>
+                <div ng-show="false" class="ibox-content ibox-heading">
+                    <h3><i class="fa fa-user-plus"></i>新产品</h3>
+                    <small><i class="fa fa-tim"></i> 这里列出可以添加的新并添加.</small>
+                </div>
+                <div class="ibox-content">
+                    <div class="feed-activity-list">
+                        <div ng-repeat="product in vm.myProducts" class="feed-element">
+                            <div>
+                                <strong class="pull-right" ng-class="{joined: 'label label-success',applying: 'label label-warning'}[userRole.joinStatus]">{{userRole.joinStatus}}</strong>
+                                <strong>{{product.alias}}</strong> ( {{product.name}} )
+                                <div class="text-danger">{{product.price}}{{product.paymentType}}</div>
+                                <div><small>描述：{{product.description}}</small></div>
+                                <div class="actions">
+                                    <a ng-click="vm.showExitRole(userRole)" class="btn btn-xs btn-link"><i class="fa fa-edit"></i>修改价格</a>
+                                </div>
+                            </div>
+                            <div>
+                                <div ng-show="false" class="ibox-content ibox-heading">
+                                    <h3><i class="fa fa-check-square-o"></i> 确认删除</h3>
+                                    <small><i class="fa fa-tim"></i> 您正在删除产品价格，请小心确认！.</small>
+                                    <div class="actions pull-right">
+                                        <a class="btn btn-xs btn-primary"><i class="fa fa-level-down"></i> 确认删除</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
