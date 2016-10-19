@@ -1,5 +1,5 @@
 {
-    "type":"nut.core",
+	"type": "nut.core",
 	"permits": {
 		"admin": {
 			"alias": "admin money stuff"
@@ -9,6 +9,32 @@
 		},
 		"client": {
 			"alias": "money stuff for client"
+		}
+	},
+	"productTypes": {
+		"discount.topup": {
+			"name": "discount.topup",
+			"alias": "充值折扣",
+			"attributes": {
+				"name": {
+					"inputBy": "space-manager",
+					"unique": true,
+					"required": true
+				},
+				"alias": {
+					"inputBy": "space-manager",
+					"required": true
+				},
+				"description": {
+					"inputBy": "space-manager",
+					"required": true
+				},
+				"valueAfterDiscount": {
+					"inputBy": "space-manager",
+					"required": true,
+					"unit": "percent"
+				}
+			}
 		}
 	}
 }
