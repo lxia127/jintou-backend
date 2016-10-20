@@ -104,8 +104,8 @@ function TreeTable(context) {
 
         childData = Object.assign(parentObj, childData);
         childData.fullname = parentFullname + "." + childName;
-        if (childData['_id']) {
-            delete childData['_id'];
+        if (childData['id']) {
+            delete childData['id'];
         }
 
         if (childData['_id']) {
@@ -225,7 +225,17 @@ function TreeTable(context) {
     }
 
     this.getParent = function (child) {
-
+        var Model;
+        if(typeof child === 'object' && !Array.isArray(child)){
+            Model = child.Model();
+            if(child.parentId && Model){
+                return Modal.findById(child.parentId);
+            } else {
+                return Promise.resolve(null);
+            }
+        } else {
+            return Promise.resolve(null);
+        }
     }
 
     this.removeChild = function (parent, childContext) {
