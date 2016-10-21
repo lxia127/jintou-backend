@@ -3,6 +3,7 @@
 import sqldb from '../../sqldb';
 import _ from 'lodash';
 var Promise = require('bluebird');
+import TreeObj from '../../sqldb/TreeObj';
 
 export default function (sequelize, DataTypes) {
   return sequelize.define('ProductCategory', {
@@ -39,45 +40,8 @@ export default function (sequelize, DataTypes) {
 
 				addType: function (typeData) {
 					var that = this;
-					if (typeof typeData !== 'object' || Array.isArray(typeData)) {
-						return Promise.reject('please provide object as typeData!');
-					} else {
-						if (!typeData.spaceId) {
-							return Promise.reject('please provide typeId in typeData');
-						}
-						else if (!typeData.name) {
-							return Promise.reject('please provide name in typeData!');
-						}
-						else {
-							if (typeData.parentId && typeData.parentId > 0) {
-								return this.findById(typeData.parentId).then(function (parent) {
-									if (parent) {
-										typeData.fullname = parent.fullname + '.' + typeData.name;
-									}
-									return that.findOrCreate({
-										where: {
-											name: typeData.name,
-											spaceId: typeData.spaceId
-										},
-										default: typeData
-									}).spread(function (entity, created) {
-										return Promise.resolve(entity);
-									})
-								})
-							}
-							else {
-								return that.findOrCreate({
-									where: {
-										name: typeData.name,
-										spaceId: typeData.spaceId
-									},
-									default: typeData
-								}).spread(function (entity, created) {
-									return Promise.resolve(entity);
-								})
-							}
-						}
-					}
+					var treeObj = new TreeObj(this);
+					return treeObj.addChild(typeData);
 				},
 
 				updateType: function (typeData) {

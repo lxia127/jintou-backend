@@ -79,38 +79,7 @@ export function show(req, res) {
 
 // Creates a new Nut in the DB
 export function create(req, res) {
-    //console.log('Nut create req.body:', JSON.stringify(req.body));
-    var nutData = req.body;
-    var typeName;
-    for(var key in nutData){
-  	  if(key.toLowerCase() === 'type' || key.toLowerCase() === 'typename'){
-  		  typeName = nutData[key];
-  		  delete nutData[key]; 
-  	  }
-    }
-	
-	if(nutData.name){
-		var nutName = nutData.name;
-		delete nutData.name;
-	}
-  
-    if(typeName && nutName){
-		console.log('create nut typeName:',typeName);
-  	  Nut.addType(typeName).then(function(type){
-  		  nutData.typeId = type._id;
-  	      Nut.findOrCreate({
-			  where: {name: nutName},
-			  defaults:nutData})
-  	      .then(respondWithResult(res, 201))
-  	      .catch(handleError(res));
-  	  })
-    } else {
-	      Nut.findOrCreate({
-		  		where: {name: nutName},
-		  		defaults:nutData})
-	      	.then(respondWithResult(res, 201))
-	      	.catch(handleError(res));
-    } 
+    
 }
 
 // Updates an existing Nut in the DB

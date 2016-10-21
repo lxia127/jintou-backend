@@ -61,7 +61,7 @@ function TreeObj(Model) {
         }
     }
 
-    this.create = function (data) {
+    this.findOrCreate = function (data) {
         if (typeof data !== 'object' || Array.isArray(data)) {
             return Promise.reject('please provide object data!');
         } else {
@@ -104,6 +104,23 @@ function TreeObj(Model) {
     }
 
     this.update = function (data, model) {
+        if (model && model.Model) {
+            if (data.name) {
+                data.fullname = model.fullname.slice(0, model.fullname.lastIndexOf('.')) + data.name;
+            }
+            return model.update(data);
+        } else {
+            return this.find(data).then(function (model) {
+                if (model && model.Model) {
+                    if (data.name) {
+                        data.fullname = model.fullname.slice(0, model.fullname.lastIndexOf('.')) + data.name;
+                    }
+                    return model.update(data);
+                } else {
+                    return Promise.reject('fail to find valid model for update!');
+                }
+            })
+        }
         if (typeof data !== 'object' || Array.isArray(data)) {
             return Promise.reject('please provide object data!');
         } else {
@@ -130,18 +147,12 @@ function TreeObj(Model) {
     }
 
     this.addChild = function (childData, parent) {
-
         var data = childData;
 
-        if (typeof data !== 'object' || Array.isArray(data)) {
-            return Promise.reject('please provide object childData!');
-        } else {
-            if (!data.name) {
-                return Promise.reject('please provide name in childData!');
-            }
-            else {
-                var Model = parent.model();
-                data.fullname = parent.fullname + '.' + data.name;
+        return this.find(parent).then(function (oParent) {
+            if (oParent) {
+                var Model = oParent.Model;
+                data.fullname = oParent.fullname + '.' + data.name;
                 return Model.findOrCreate({
                     where: {
                         fullname: data.fullname,
@@ -151,23 +162,20 @@ function TreeObj(Model) {
                 }).spread(function (entity, created) {
                     return Promise.resolve(entity);
                 })
+            } else {
+                Promise.reject('no valid parent find!');
             }
-        }
+        })
     }
 
-    this.updateChild = function (childData, parent) {
+    this.addOrUpdateChild = function (childData, parent) {
 
         var data = childData;
 
-        if (typeof data !== 'object' || Array.isArray(data)) {
-            return Promise.reject('please provide object childData!');
-        } else {
-            if (!data.name) {
-                return Promise.reject('please provide name in childData!');
-            }
-            else {
-                var Model = parent.model();
-                data.fullname = parent.fullname + '.' + data.name;
+        return this.find(parent).then(function (oParent) {
+            if (oParent) {
+                var Model = oParent.Model;
+                data.fullname = oParent.fullname + '.' + data.name;
                 return Model.findOrCreate({
                     where: {
                         fullname: data.fullname,
@@ -181,66 +189,49 @@ function TreeObj(Model) {
                         return entity.update(data);
                     }
                 })
+            } else {
+                Promise.reject('no valid parent find!');
             }
-        }
+        })
     }
 
-    this.getChildren = function (parent, type) {
-        var childType = 'all';
-        if (['leaf', 'direct'].indexOf(type)) {
-            childType = type;
-        }
+    this.getChildren = function (parent) {
 
-        if (typeof parent === 'object' && !Array.isArray(parent)) {
-            if (parent.Model) {
-                var Model = parent.Model;
+        return this.find(parent).then(function (oParent) {
+            if (oParent) {
+                var Model = oParent.Model;
                 return Model.findAll(
                     {
                         where: {
-                            spaceId: parent.spaceId,
+                            spaceId: oParent.spaceId,
                             fullname: {
-                                $like: parent.fullname + '.%'
+                                $like: oParent.fullname + '.%'
                             }
                         }
                     }
                 )
             } else {
-                return this.find(parent).then(function (oParent) {
-                    if (oParent) {
-                        var Model = oParent.Model;
-                        return Model.findAll(
-                            {
-                                where: {
-                                    spaceId: oParent.spaceId,
-                                    fullname: {
-                                        $like: oParent.fullname + '.%'
-                                    }
-                                }
-                            }
-                        )
-                    }
-                })
+                return Promise.reject('fail to find valid parent!');
             }
-        } else {
-            return Promise.reject('please provide object parent!');
-        }
+        })
+
     }
 
     this.getChild = function (parentData, childData) {
         return this.find(parentData).then(function (parent) {
             if (parent) {
-                if(typeof childData === 'string'){
+                if (typeof childData === 'string') {
                     childData = {
                         name: childData
                     }
                 }
 
-                if(typeof childData === 'object'){
+                if (typeof childData === 'object') {
                     childData.parent = parent;
                     return this.find(childData);
                 } else {
-                    return this.getChildren(parent).then(function(children){
-                        if(children && children.length > 0){
+                    return this.getChildren(parent).then(function (children) {
+                        if (children && children.length > 0) {
                             return Promise(children[0]);
                         } else {
                             return Promise.resolve(null);
@@ -253,6 +244,78 @@ function TreeObj(Model) {
         })
     }
 
+    this.getParent = function (childData) {
+        return this.find(childData).then(function (child) {
+            if (child && child.parentId && child.parentId > 0) {
+                return this.find(child.parentId);
+            } else {
+                return Promise.resolve(null);
+            }
+        }).catch(function (err) {
+            console.log('getParent err:', err);
+        })
+    }
+
+    this.hasChild = function (parentData) {
+        return this.find(parentData).then(function (parent) {
+            if (parent) {
+                Model = parent.Model;
+                return Modal.find({
+                    where: {
+                        parentId: parent._id
+                    }
+                }).then(function (child) {
+                    if (child) {
+                        return Promise.resolve(true);
+                    } else {
+                        return Promise.resolve(false);
+                    }
+                })
+            } else {
+                return Promise.reject('no valid parent find!');
+            }
+        })
+    }
+
+    this.hasParent = function (childData) {
+        return this.find(childData).then(function (child) {
+            if (child) {
+                if (child.parentId && child.parentId > 0) {
+                    return Promise.resolve(true);
+                }
+                else {
+                    return Promise.resolve(false);
+                }
+            } else {
+                return Promise.reject('no valid child find!');
+            }
+        })
+    }
+
+    this.isChild = function (childData, parentData) {
+        var that = this;
+        return this.find(childData).then(function (child) {
+            if (child) {
+                return that.find(parentData).then(function (parent) {
+                    if (parent) {
+                        if (parent._id === child.parentId) {
+                            return Promise.resolve(true);
+                        } else {
+                            return Promise.resolve(false);
+                        }
+                    } else {
+                        return Promise.reject('no valid parent find!');
+                    }
+                })
+            } else {
+                return Promise.reject('no valid child find!');
+            }
+        })
+    }
+
+    this.isParent = function (parentData, childData) {
+        return this.isChild(childData, parentData);
+    }
 
 }
 
