@@ -151,8 +151,8 @@ export function create(req, res){
 
 export function wechatLogin(req, res)
 {
-  
-//  res.send(req.query.code);
+
+
   if(req.query.code){
     var code = req.query.code;
     var url = "https://api.weixin.qq.com/sns/oauth2/access_token?"+
@@ -160,7 +160,7 @@ export function wechatLogin(req, res)
               "&secret=" + SECRET +
               "&code=" + code +
               "&grant_type=authorization_code";
-              res.send();
+             
               
     // res.redirect(url);
     request.get(
@@ -202,10 +202,13 @@ export function wechatLogin(req, res)
 }
 export function wechatOauthRedirect(req,res){
   // var REDIRECT_URI = "http://e7a09da6.ngrok.io/wechatLogin";
+
+
   var REDIRECT_URI = "http://www.billyn.net/api/wechats/wechatLogin";
    var url = "https://open.weixin.qq.com/connect/oauth2/authorize?"+
              "appid="+APPID+
              "&redirect_uri="+REDIRECT_URI+
              "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+  
    res.redirect(url);
 }
