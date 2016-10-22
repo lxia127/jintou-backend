@@ -2,24 +2,26 @@
 
 import sqldb from '../../sqldb';
 import _ from 'lodash';
+import TreeObj from '../../sqldb/TreeObj';
+var Promise = require('bluebird');
 
 export default function (sequelize, DataTypes) {
-  return sequelize.define('ProductAttribute', {
-    _id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
+	return sequelize.define('ProductAttribute', {
+		_id: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			primaryKey: true,
+			autoIncrement: true
+		},
 		parentId: {
 			type: DataTypes.INTEGER,
 			defaultValue: -1
 		},
 		owner: {
-      type: DataTypes.STRING
-    },
+			type: DataTypes.STRING
+		},
 		ownerId: {
-      type: DataTypes.INTEGER，
+			type: DataTypes.INTEGER，
 			defaultValue: -1
     },
     name: {
@@ -65,10 +67,10 @@ export default function (sequelize, DataTypes) {
 								where: whereData
 							})
 						} else {
-							Promise.reject('provide invalid data!');
+							Promise.reject('please provide invalid data!');
 						}
 					} else {
-						Promise.reject('provide invalid data!');
+						Promise.reject('please provide invalid data!');
 					}
 				},
 				addAttribute: function (data, ownerData) {
@@ -123,8 +125,42 @@ export default function (sequelize, DataTypes) {
 						Promise.reject('invalid data!');
 					}
 				},
-				addAttributes: function(listData, ownerData){
+				addAttributes: function(listData, ownerData, checkExist){
+					if(!checkExist){
+						checkExist = true;
+					}				
+					if(Array.isArray(listData)){
+						if(!checkExist){
+							var batchData = [];
+							listData.forEach(function(item, index){								
+								if(!item.spaceId && ownerData.spaceId){
+									item.spaceId = ownerData.spaceId;
+								}
+								if(!item.owner && ownerData.owner){
+									item.owner = ownerData.owner;
+								}
+								if(!item.ownerId && ownerData.ownerId){
+									item.ownerId = ownerData.ownerId;
+								}
 
+								if(item.name && item.spaceId){
+									batchData.push(item);
+								}							
+							})
+							return this.batchCreate(batchData);
+						}
+						else {
+							var finalList = [];
+							return Promise.each(listData, function(data){
+								return that.addAttribute(data,ownerData).then(function(attr){
+									finalList.push(attr);
+									return Promise.resolve(null);
+								});
+							}).then(function(){
+								return Promise.resolve(finalList);
+							})
+						}					
+					}
 				}
 			},
 		});

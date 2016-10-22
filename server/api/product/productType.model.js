@@ -70,7 +70,7 @@ export default function (sequelize, DataTypes) {
 						if (type) {
 							theType = type;
 							var ownerData = {
-								owner: 'ProductType',
+								owner: 'producttype',
 								ownerId: type._id,
 								spaceId: type.spaceId
 							}
