@@ -175,7 +175,12 @@ export function wechatLogin(req, res)
                 // res.send(openid); 
                 User.find({where: {wechat: openid}}).then(function(user){
                   var result = user? true: false;
-                  res.redirect("http://www.billyn.net/wechat/auth?"+"result="+result+"&openid="+openid);
+                  if(user){
+                    res.redirect("http://www.billyn.net/wechat/login?"+"result="+result+"&openid="+openid);
+                  } else {
+                    res.redirect("http://www.billyn.net/wechat/bind?"+"result="+result+"&openid="+openid);
+                  }
+                  
                 })
 
                 // // get user info
