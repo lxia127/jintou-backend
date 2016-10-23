@@ -45,6 +45,10 @@ export default function (sequelize, DataTypes) {
 
 				getType: function (data) {
 					var that = this;
+					var ProductAttribute = sqldb.ProductAttribute;
+					var PermitRole = sqldb.PermitRole;
+					this.hasMany(ProductAttribute, { as: 'attributes', foreignKey: "ownerId" })
+					ProductAttribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" })
 					return this.findType(data).then(function (type) {
 						if (type && type.Model) {
 							return that.find({
@@ -53,12 +57,53 @@ export default function (sequelize, DataTypes) {
 								},
 								include: [
 									{
-										model: ProductAttribute as 'attributes'
+										model: ProductAttribute, as: 'attributes',
+										include: [
+											{
+												model: PermitRole, as: "permits",
+												required: false,
+												where: {
+													owner: 'ProductAttribute'
+												}
+											}
+										]
 									}
 								]
 							})
+						} else {
+							return Promise.resolve(null);
 						}
 					})
+				},
+
+				getTypes: function (data) {
+					var that = this;
+					var ProductAttribute = sqldb.ProductAttribute;
+					var PermitRole = sqldb.PermitRole;
+					this.hasMany(ProductAttribute, { as: 'attributes', foreignKey: "ownerId" });
+					ProductAttribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" });
+
+					if (typeof data === 'object' && Object.keys(data).length > 0) {
+						return that.findAll({
+							where: data,
+							include: [
+								{
+									model: ProductAttribute, as: 'attributes',
+									include: [
+										{
+											model: PermitRole, as: "permits",
+											required: false,
+											where: {
+												owner: 'ProductAttribute'
+											}
+										}
+									]
+								}
+							]
+						})
+					} else {
+						return Promise.reject('must provide data for seach types!');
+					}
 				},
 
 				addType: function (typeData, ownerData) {
@@ -66,28 +111,44 @@ export default function (sequelize, DataTypes) {
 					var treeObj = new TreeObj(this);
 					var Attribute = sqldb.ProductAttribute;
 					var theType;
-					return treeObj.addChild(typeData, ownerData).then(function (type) {
+					return treeObj.findOrCreate(typeData, ownerData).then(function (type) {
 						if (type) {
 							theType = type;
 							var ownerData = {
-								owner: 'producttype',
+								owner: 'ProductType',
 								ownerId: type._id,
 								spaceId: type.spaceId
 							}
 							if (typeData.attributes) {
 								return Attribute.addAttributes(typeData.attributes, ownerData);
 							} else {
-								return Promise.resolve(null);
+								return Promise.resolve(type);
 							}
 						}
-					}).then(function(){
+					}).then(function () {
 						return that.getType(theType);
 					})
 				},
 
+				addTypes: function (listData, ownerData) {
+					var that = this;
+					if (Array.isArray(listData)) {
+						var finalList = [];
+						return Promise.each(listData, function (data) {
+							return that.addType(data, ownerData).then(function (type) {
+								finalList.push(type);
+								return Promise.resolve(null);
+							});
+						}).then(function () {
+							return Promise.resolve(finalList);
+						})
+					} else {
+						Promise.reject('please provide array data!');
+					}
+				}
 			},
 			instanceMethods: {
-				addAttribute: function(data){
+				addAttribute: function (data) {
 					var Attribute = sqldb.ProductAttribute;
 					var ownerData = {
 						owner: "ProductType",
@@ -96,7 +157,7 @@ export default function (sequelize, DataTypes) {
 					}
 					return Atrribute.addAttribute(data, ownerData);
 				},
-				addAttributes: function(listData){
+				addAttributes: function (listData) {
 					var Attribute = sqldb.ProductAttribute;
 					var ownerData = {
 						owner: "ProductType",

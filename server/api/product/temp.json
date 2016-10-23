@@ -1,0 +1,18 @@
+{
+    "name": "type1",
+    "alias": "type1 alias",
+    "attributes": {
+        "attr1": {
+            "value": "value1",
+            "grants": {
+                "manager": "allow.input"
+            }
+        },
+        "attr2": {
+            "value": "value2",
+            "grants": {
+                "client": "allow.input"
+            }
+        }
+    }
+}

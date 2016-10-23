@@ -73,6 +73,12 @@ export default function (sequelize, DataTypes) {
 				},
 				//with full include
 				getProduct: function (data) {
+					var ProductAttribute = sqldb.ProductAttribute;
+					var ProductType = sqldb.ProductType;
+					var that = this;
+					ProductType.belongsTo(Product, { as: 'type' });
+					ProductAttribute.belongsTo(Product, { as: 'attributes' });
+					
 					return this.findProduct(data).then(function (product) {
 						return that.find({
 							where: {
@@ -80,15 +86,15 @@ export default function (sequelize, DataTypes) {
 							},
 							include: [
 								{
-									model: ProductCategory as 'type',
+									model: ProductType, as: 'type',
 									include: [
 										{
-											model: ProductAttribute as 'attributes'
+											model: ProductAttribute, as: 'attributes'
 										}
 									]
 								},
 								{
-									model: ProductAttribute as 'attributes'
+									model: ProductAttribute, as: 'attributes'
 								}
 							]
 						});
@@ -98,6 +104,7 @@ export default function (sequelize, DataTypes) {
 				add: function (productData) {
 					var that = this;
 					var pType, pAttributes, product;
+					var TypeModel = sqldb.ProductType;
 					if (typeof productData === 'object' && !Array.isArray(productData)) {
 						return this.findObj(productData).then(function (oProduct) {
 							if (oProduct) {
@@ -107,7 +114,7 @@ export default function (sequelize, DataTypes) {
 									//add type first
 									return new Promise(function (resolve, reject) {
 										if (productData.type) {
-											return that.addType(productData.type).then(function (type) {
+											return TypeModel.findType(productData.type).then(function (type) {
 												if (type) {
 													pType = type;
 													return resolve(type);
@@ -152,18 +159,27 @@ export default function (sequelize, DataTypes) {
 					} else {
 						Promise.reject('no valid productData!');
 					}
-				},
-				addType: function (typeData) {
-
-				},
+				}
 
 			},
 			instanceMethods: {
 				addAttribute: function (data) {
-
+					var Attribute = sqldb.ProductAttribute;
+					var ownerData = {
+						owner: "Product",
+						ownerId: this._id,
+						spaceId: this.spaceId
+					}
+					return Atrribute.addAttribute(data, ownerData);
 				},
 				addAttributes: function (listData) {
-
+					var Attribute = sqldb.ProductAttribute;
+					var ownerData = {
+						owner: "Product",
+						ownerId: this._id,
+						spaceId: this.spaceId
+					}
+					return Atrribute.addAttributes(listData, ownerData);
 				}
 			}
 		});

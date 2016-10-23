@@ -61,12 +61,13 @@ function TreeObj(Model) {
         }
     }
 
-    this.findOrCreate = function (data) {
+    this.findOrCreate = function (data, ownerData) {
         if (typeof data !== 'object' || Array.isArray(data)) {
             return Promise.reject('please provide object data!');
         } else {
-            if (!data.spaceId) {
-                return Promise.reject('please provide spaceId in data');
+            var spaceId = data.spaceId || ownerData.spaceId
+            if (!spaceId) {
+                return Promise.reject('please provide spaceId in data or ownerData');
             }
             else if (!data.name) {
                 return Promise.reject('please provide name in data!');
@@ -80,7 +81,7 @@ function TreeObj(Model) {
                         return Model.findOrCreate({
                             where: {
                                 name: data.name,
-                                spaceId: data.spaceId
+                                spaceId: spaceId
                             },
                             default: data
                         }).spread(function (entity, created) {
@@ -92,7 +93,7 @@ function TreeObj(Model) {
                     return Model.findOrCreate({
                         where: {
                             name: data.name,
-                            spaceId: data.spaceId
+                            spaceId: spaceId
                         },
                         default: data
                     }).spread(function (entity, created) {
