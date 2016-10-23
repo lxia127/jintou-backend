@@ -2,10 +2,11 @@
 
 (function () {
 
-    class CircleController {
+    class WechatController {
         constructor($state, $stateParams, $rootScope, BNut) {
             var test = 'test';
         }
+        
     }
 
     class CircleHomeController {
