@@ -83,7 +83,7 @@ function TreeObj(Model) {
                                 name: data.name,
                                 spaceId: spaceId
                             },
-                            default: data
+                            defaults: data
                         }).spread(function (entity, created) {
                             return Promise.resolve(entity);
                         })
@@ -95,7 +95,7 @@ function TreeObj(Model) {
                             name: data.name,
                             spaceId: spaceId
                         },
-                        default: data
+                        defaults: data
                     }).spread(function (entity, created) {
                         return Promise.resolve(entity);
                     })
@@ -159,7 +159,7 @@ function TreeObj(Model) {
                         fullname: data.fullname,
                         spaceId: data.spaceId
                     },
-                    default: data
+                    defaults: data
                 }).spread(function (entity, created) {
                     return Promise.resolve(entity);
                 })
@@ -182,7 +182,7 @@ function TreeObj(Model) {
                         fullname: data.fullname,
                         spaceId: data.spaceId
                     },
-                    default: data
+                    defaults: data
                 }).spread(function (entity, created) {
                     if (created) {
                         return Promise.resolve(entity);

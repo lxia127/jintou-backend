@@ -58,6 +58,9 @@ export default function (sequelize, DataTypes) {
 								include: [
 									{
 										model: ProductAttribute, as: 'attributes',
+										where: {
+											owner: 'ProductType'
+										},
 										include: [
 											{
 												model: PermitRole, as: "permits",
@@ -89,6 +92,9 @@ export default function (sequelize, DataTypes) {
 							include: [
 								{
 									model: ProductAttribute, as: 'attributes',
+									where: {
+										owner: 'ProductType'
+									},
 									include: [
 										{
 											model: PermitRole, as: "permits",

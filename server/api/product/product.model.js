@@ -66,6 +66,9 @@ export default function (sequelize, DataTypes) {
 									},
 									{
 										model: ProductAttribute, as: 'attributes',
+										where: {
+											owner: 'Product'
+										},
 										include: [
 											{
 												model: PermitRole, as: "permits",
@@ -101,6 +104,9 @@ export default function (sequelize, DataTypes) {
 								},
 								{
 									model: ProductAttribute, as: 'attributes',
+									where: {
+										owner: 'Product'
+									},
 									include: [
 										{
 											model: PermitRole, as: "permits",
@@ -118,16 +124,17 @@ export default function (sequelize, DataTypes) {
 					}
 				},
 
-				addProduct: function (productData) {
+				addProduct: function (productData, ownerData) {
 					var that = this;
 					var treeObj = new TreeObj(this);
 					var Attribute = sqldb.ProductAttribute;
+					var ProductType = sqldb.ProductType;
 					var theProduct;
 
 					return new Promise(function (resolve, reject) {
-						if (productData.type && productData.spaceId) {
+						if (productData.type && (productData.spaceId || ownerData.spaceId)) {
 							var typeData = {};
-							typeData.spaceId = productData.spaceId;
+							typeData.spaceId = productData.spaceId || ownerData.spaceId;
 							if (typeof productData.type === 'string') {
 								typeData.name = productData.type;
 							}
@@ -135,7 +142,9 @@ export default function (sequelize, DataTypes) {
 								typeData = productData.type;
 							}
 							if (typeData.name && typeData.spaceId) {
-								return ProductType.findType(typeData);
+								return ProductType.findType(typeData).then(function(o){
+									return resolve(o);
+								});
 							} else {
 								return reject('please provide type name and spaceId');
 							}
@@ -171,7 +180,7 @@ export default function (sequelize, DataTypes) {
 					})
 				},
 
-				addProducts: function (listData) {
+				addProducts: function (listData, ownerData) {
 					var that = this;
 					if (Array.isArray(listData)) {
 						var finalList = [];
