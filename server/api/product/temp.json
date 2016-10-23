@@ -1,18 +1,26 @@
 {
-    "name": "type1",
-    "alias": "type1 alias",
-    "attributes": {
-        "attr1": {
-            "value": "value1",
-            "grants": {
-                "manager": "allow.input"
-            }
-        },
-        "attr2": {
-            "value": "value2",
-            "grants": {
-                "client": "allow.input"
-            }
-        }
-    }
+	"name":"product1",
+	"alias":"product1",
+    "type":"type1",
+	"attributes":{
+		"a1":{
+			"value":"v1"
+		},
+		"a2":"v2",
+		"a3":{
+			"value":"v3"
+		},
+		"a4":{
+			"value":"a4",
+			"grants":{
+				"client":"allow.input"
+			}
+		},
+		"a5":{
+			"value":"a5",
+			"grants":{
+				"client":"allow.input"
+			}
+		}
+	}
 }

@@ -12,9 +12,10 @@ router.post('/types', controller.addType);
 router.post('/types/batch', controller.addTypes);
 
 //default function for voucher table
-router.get('/', controller.index);
-router.get('/:id', controller.show);
-router.post('/', controller.create);
+router.get('/', controller.getProducts);
+router.get('/:id', controller.getProduct);
+router.post('/', controller.addProduct);
+router.post('/batch', controller.addProducts);
 router.put('/:id', controller.update);
 router.delete('/:id', controller.destroy);
 
