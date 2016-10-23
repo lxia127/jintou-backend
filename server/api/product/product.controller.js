@@ -225,6 +225,23 @@ export function getTypes(req, res){
   }
 }
 
+export function updateType(req, res){
+  var id = req.params.id;
+  var body = req.body;
+
+  return ProductType.updateType(req.body,req.params.id)
+    .then(handleEntityNotFound(res))
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
+export function deleteType(req, res){
+  ProductType.findById(req.params.id)
+    .then(handleEntityNotFound(res))
+    .then(removeEntity(res))
+    .catch(handleError(res));
+}
+
 /**
  * method: POST
  * url: /api/products/types
@@ -388,6 +405,23 @@ export function getProducts(req, res){
   } else {
     res.status(500).send('please provide spaceId');
   }
+}
+
+export function updateProduct(req, res){
+  var id = req.params.id;
+  var body = req.body;
+
+  return Product.updateProduct(req.body,req.params.id)
+    .then(handleEntityNotFound(res))
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
+export function deleteProduct(req, res){
+  Product.findById(req.params.id)
+    .then(handleEntityNotFound(res))
+    .then(removeEntity(res))
+    .catch(handleError(res));
 }
 
 // Gets a list of Nuts

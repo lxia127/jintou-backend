@@ -8,9 +8,22 @@ var Model;
 function TreeObj(Model) {
     Model = Model;
 
+    Model.belongsTo(Model, { as: 'parent', foreignKey: 'parentId' });
+
     this.find = function (data) {
         if (Model && !isNaN(data) && data > 0) {
-            return Model.findById(data);
+            return Model.findOne(
+                {
+                    where: {
+                        _id: data
+                    },
+                    include: [
+                        {
+                            model: Model, as: 'parent'
+                        }
+                    ]
+                }
+            );
         }
         else if (typeof data === 'object' && !Array.isArray(data)) {
             if (data.Model) {
@@ -21,8 +34,16 @@ function TreeObj(Model) {
                     if (data.parentId && data.parentId > 0) {
                         return Model.findById(data.parentId).then(function (parent) {
                             return Model.find({
-                                fullname: parent.fullname + '.' + data.name,
-                                spaceId: spaceId
+                                where: {
+                                    fullname: parent.fullname + '.' + data.name,
+                                    spaceId: spaceId
+                                },
+                                include: [
+                                    {
+                                        model: Model, as: 'parent'
+                                    }
+                                ]
+
                             })
                         })
                     }
@@ -30,22 +51,42 @@ function TreeObj(Model) {
                         var parentName = data.parent.fullname || data.parent.name;
                         var fullname = parentName ? parentName + '.' + data.name : data.name;
                         return Model.find({
-                            fullname: fullname,
-                            spaceId: spaceId
+                            where: {
+                                fullname: fullname,
+                                spaceId: spaceId
+                            },
+                            include: [
+                                {
+                                    model: Model, as: 'parent'
+                                }
+                            ]
+
                         })
                     }
                     else if (data.parent && typeof data.parent === 'string') {
                         return Model.find({
-                            fullname: parent + '.' + data.name,
-                            spaceId: spaceId
+                            where: {
+                                fullname: data.parent + '.' + data.name,
+                                spaceId: spaceId
+                            },
+                            include: [
+                                {
+                                    model: Model, as: 'parent'
+                                }
+                            ]
                         })
                     }
                     else {
                         return Model.find({
                             where: {
-                                name: data.name,
+                                fullname: data.name,
                                 spaceId: data.spaceId
-                            }
+                            },
+                            include: [
+                                {
+                                    model: Model, as: 'parent'
+                                }
+                            ]
                         })
                     }
                 } else {
@@ -90,6 +131,7 @@ function TreeObj(Model) {
                     })
                 }
                 else {
+                    data.fullname = data.name;
                     return Model.findOrCreate({
                         where: {
                             name: data.name,
@@ -104,46 +146,24 @@ function TreeObj(Model) {
         }
     }
 
-    this.update = function (data, model) {
-        if (model && model.Model) {
-            if (data.name) {
-                data.fullname = model.fullname.slice(0, model.fullname.lastIndexOf('.')) + data.name;
+    this.update = function (data, findData) {
+        if (findData && findData.Model) {
+            var model = findData;
+            if (data.name && findData.parent) {
+                data.fullname = model.parent.fullname + "." + data.name;
             }
             return model.update(data);
         } else {
-            return this.find(data).then(function (model) {
+            return this.find(findData).then(function (model) {
                 if (model && model.Model) {
-                    if (data.name) {
-                        data.fullname = model.fullname.slice(0, model.fullname.lastIndexOf('.')) + data.name;
+                    if (data.name && model.parent) {
+                        data.fullname = model.parent.fullname + "." + data.name;
                     }
                     return model.update(data);
                 } else {
                     return Promise.reject('fail to find valid model for update!');
                 }
             })
-        }
-        if (typeof data !== 'object' || Array.isArray(data)) {
-            return Promise.reject('please provide object data!');
-        } else {
-            var modelId = data.id || data._id || null;
-            if (modelId && modelId > 0) {
-                return Model.findById(modelId).then(function (oModel) {
-                    model = oModel;
-                    if (data.name) {
-                        data.fullname = model.fullname.substring(0, type.fullname.lastIndexOf('.')) + data.name;
-                    }
-                    return model.update(data);
-                })
-            } else {
-                if (model) {
-                    if (data.name) {
-                        data.fullname = model.fullname + "." + data.name;
-                    }
-                    return model.update(data);
-                } else {
-                    return Promise.reject('fail to update');
-                }
-            }
         }
     }
 

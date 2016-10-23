@@ -92,6 +92,7 @@ export default function (sequelize, DataTypes) {
 					var ProductAttribute = sqldb.ProductAttribute;
 					var PermitRole = sqldb.PermitRole;
 					var ProductType = sqldb.ProductType;
+					this.belongsTo(ProductType, { as: 'type' });
 					this.hasMany(ProductAttribute, { as: 'attributes', foreignKey: "ownerId" });
 					ProductAttribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" });
 
@@ -142,7 +143,7 @@ export default function (sequelize, DataTypes) {
 								typeData = productData.type;
 							}
 							if (typeData.name && typeData.spaceId) {
-								return ProductType.findType(typeData).then(function(o){
+								return ProductType.findType(typeData).then(function (o) {
 									return resolve(o);
 								});
 							} else {
@@ -195,7 +196,14 @@ export default function (sequelize, DataTypes) {
 					} else {
 						Promise.reject('please provide array data!');
 					}
-				}
+				},
+
+				updateProduct: function (updateData, findData) {
+					var treeObj = new TreeObj(this);
+					return treeObj.update(updateData, findData).then(function(p){
+						return this.getProduct(p);
+					});
+				},
 			},
 			instanceMethods: {
 				addAttribute: function (data) {

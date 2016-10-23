@@ -151,7 +151,14 @@ export default function (sequelize, DataTypes) {
 					} else {
 						Promise.reject('please provide array data!');
 					}
-				}
+				},
+
+				updateType: function (updateData, findData) {
+					var treeObj = new TreeObj(this);
+					return treeObj.update(updateData, findData).then(function(oType){
+						return this.getType(oType);
+					});
+				},
 			},
 			instanceMethods: {
 				addAttribute: function (data) {
