@@ -5,6 +5,14 @@ var controller = require('./product.controller');
 
 var router = express.Router();
 
+//for attributes
+router.get('/attributes', controller.getAttributes);
+router.get('/attributes/:id', controller.getAttribute);
+router.post('/attributes', controller.addAttribute);
+router.post('/attributes/batch', controller.addAttributes);
+router.put('/attributes/:id', controller.updateAttribute);
+router.delete('/attributes/:id', controller.deleteAttribute);
+
 //for types
 router.get('/types', controller.getTypes);
 router.get('/types/:id', controller.getType);

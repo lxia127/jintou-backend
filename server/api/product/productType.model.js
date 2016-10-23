@@ -47,6 +47,10 @@ export default function (sequelize, DataTypes) {
 					var that = this;
 					var ProductAttribute = sqldb.ProductAttribute;
 					var PermitRole = sqldb.PermitRole;
+					var Permit = sqldb.Permit;
+					var Role = sqldb.Role;
+					PermitRole.belongsTo(sqldb.Permit, { as: 'permit' });
+					PermitRole.belongsTo(sqldb.Role, { as: 'role' });
 					this.hasMany(ProductAttribute, { as: 'attributes', foreignKey: "ownerId" })
 					ProductAttribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" })
 					return this.findType(data).then(function (type) {
@@ -64,6 +68,14 @@ export default function (sequelize, DataTypes) {
 										include: [
 											{
 												model: PermitRole, as: "permits",
+												include: [
+													{
+														model: Permit, as: 'permit'
+													},
+													{
+														model: Role, as: 'role'
+													}
+												],
 												required: false,
 												where: {
 													owner: 'ProductAttribute'
@@ -83,6 +95,10 @@ export default function (sequelize, DataTypes) {
 					var that = this;
 					var ProductAttribute = sqldb.ProductAttribute;
 					var PermitRole = sqldb.PermitRole;
+					var Permit = sqldb.Permit;
+					var Role = sqldb.Role;
+					PermitRole.belongsTo(sqldb.Permit, { as: 'permit' });
+					PermitRole.belongsTo(sqldb.Role, { as: 'role' });
 					this.hasMany(ProductAttribute, { as: 'attributes', foreignKey: "ownerId" });
 					ProductAttribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" });
 
@@ -98,6 +114,14 @@ export default function (sequelize, DataTypes) {
 									include: [
 										{
 											model: PermitRole, as: "permits",
+											include: [
+												{
+													model: Permit, as: 'permit'
+												},
+												{
+													model: Role, as: 'role'
+												}
+											],
 											required: false,
 											where: {
 												owner: 'ProductAttribute'
@@ -155,7 +179,7 @@ export default function (sequelize, DataTypes) {
 
 				updateType: function (updateData, findData) {
 					var treeObj = new TreeObj(this);
-					return treeObj.update(updateData, findData).then(function(oType){
+					return treeObj.update(updateData, findData).then(function (oType) {
 						return this.getType(oType);
 					});
 				},

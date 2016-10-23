@@ -52,8 +52,12 @@ export default function (sequelize, DataTypes) {
 					var ProductType = sqldb.ProductType;
 					var PermitRole = sqldb.PermitRole;
 					this.belongsTo(ProductType, { as: 'type' });
-					this.hasMany(ProductAttribute, { as: 'attributes', foreignKey: "ownerId" })
-					ProductAttribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" })
+					var Permit = sqldb.Permit;
+					var Role = sqldb.Role;
+					PermitRole.belongsTo(sqldb.Permit, { as: 'permit' });
+					PermitRole.belongsTo(sqldb.Role, { as: 'role' });
+					this.hasMany(ProductAttribute, { as: 'attributes', foreignKey: "ownerId" });
+					ProductAttribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" });
 					return this.findProduct(data).then(function (product) {
 						if (product && product.Model) {
 							return that.find({
@@ -72,6 +76,16 @@ export default function (sequelize, DataTypes) {
 										include: [
 											{
 												model: PermitRole, as: "permits",
+												include: [
+													{
+														model: Permit, as: 'permit',
+														required: false
+													},
+													{
+														model: Role, as: 'role',
+														required: false
+													}
+												],
 												required: false,
 												where: {
 													owner: 'ProductAttribute'
@@ -93,6 +107,10 @@ export default function (sequelize, DataTypes) {
 					var PermitRole = sqldb.PermitRole;
 					var ProductType = sqldb.ProductType;
 					this.belongsTo(ProductType, { as: 'type' });
+					var Permit = sqldb.Permit;
+					var Role = sqldb.Role;
+					PermitRole.belongsTo(sqldb.Permit, { as: 'permit' });
+					PermitRole.belongsTo(sqldb.Role, { as: 'role' });
 					this.hasMany(ProductAttribute, { as: 'attributes', foreignKey: "ownerId" });
 					ProductAttribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" });
 
@@ -111,6 +129,16 @@ export default function (sequelize, DataTypes) {
 									include: [
 										{
 											model: PermitRole, as: "permits",
+											include: [
+												{
+													model: Permit, as: 'permit',
+													required: false
+												},
+												{
+													model: Role, as: 'role',
+													required: false
+												}
+											],
 											required: false,
 											where: {
 												owner: 'ProductAttribute'
@@ -200,7 +228,7 @@ export default function (sequelize, DataTypes) {
 
 				updateProduct: function (updateData, findData) {
 					var treeObj = new TreeObj(this);
-					return treeObj.update(updateData, findData).then(function(p){
+					return treeObj.update(updateData, findData).then(function (p) {
 						return this.getProduct(p);
 					});
 				},

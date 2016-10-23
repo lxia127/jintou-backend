@@ -49,7 +49,7 @@ export default function (sequelize, DataTypes) {
 		active: DataTypes.BOOLEAN
 	}, {
 			classMethods: {
-				getAttribute: function (data) {
+				findAttribute: function (data) {
 					if (!isNaN(data) && data > 0) {
 						return this.findById(data);
 					} else if (typeof data === 'object') {
@@ -66,6 +66,98 @@ export default function (sequelize, DataTypes) {
 							}
 							return this.find({
 								where: whereData
+							})
+						} else {
+							Promise.reject('please provide invalid data!');
+						}
+					} else {
+						Promise.reject('please provide invalid data!');
+					}
+				},
+				getAttribute: function (data) {
+					var PermitRole = sqldb.PermitRole;
+					var Permit = sqldb.Permit;
+					var Role = sqldb.Role;
+					PermitRole.belongsTo(sqldb.Permit, { as: 'permit' });
+					PermitRole.belongsTo(sqldb.Role, { as: 'role' });
+					this.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" });
+					if (!isNaN(data) && data > 0) {
+						return this.findById(data);
+					} else if (typeof data === 'object') {
+						if (data.Model) {
+							return data;
+						} else if (data.name && data.spaceId) {
+							var whereData = {
+								name: data.name,
+								spaceId: data.spaceId
+							}
+							if (data.owner && data.ownerId && data.ownerId > 0) {
+								whereData.owner = data.owner;
+								whereData.ownerId = data.ownerId;
+							}
+							return this.find({
+								where: whereData,
+								include: [
+									{
+										model: PermitRole, as: 'permits',
+										required: false,
+										include: [
+											{
+												model: Permit, as: 'permit',
+												required: false
+											},
+											{
+												model: Role, as: 'role',
+												required: false
+											}
+										],
+										where: {
+											owner: 'ProductAttribute'
+										}
+									}
+								]
+							})
+						} else {
+							Promise.reject('please provide invalid data!');
+						}
+					} else {
+						Promise.reject('please provide invalid data!');
+					}
+				},
+				getAttributes: function (data) {
+					var PermitRole = sqldb.PermitRole;
+					var Permit = sqldb.Permit;
+					var Role = sqldb.Role;
+					PermitRole.belongsTo(sqldb.Permit, { as: 'permit' });
+					PermitRole.belongsTo(sqldb.Role, { as: 'role' });
+					this.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" });
+					if (typeof data === 'object') {
+						if (data.owner && data.ownerId) {
+							var whereData = {
+								owner: data.owner,
+								ownerId: data.ownerId
+							}
+							return this.findAll({
+								where: whereData,
+								include: [
+									{
+										model: PermitRole, as: 'permits',
+										required: false,
+										include: [
+											{
+												model: Permit, as: 'permit',
+												required: false
+											},
+											{
+												model: Role, as: 'role',
+												required: false
+											}
+										],
+										where: {
+											owner: 'ProductAttribute'
+										}
+									}
+								]
 							})
 						} else {
 							Promise.reject('please provide invalid data!');
@@ -95,7 +187,7 @@ export default function (sequelize, DataTypes) {
 							if (!data.spaceId && ownerData.spaceId) {
 								data.spaceId = ownerData.spaceId
 							}
-							return this.getAttribute(data).then(function (attr) {
+							return this.findAttribute(data).then(function (attr) {
 								if (attr) {
 									return Promise.resolve(attr);
 								} else {
@@ -119,42 +211,11 @@ export default function (sequelize, DataTypes) {
 						Promise.reject('invalid data!');
 					}
 				},
-				updateAttribute: function (data, ownerData) {
-					if (typeof data === 'object' && !Array.isArray(data)) {
-						if (data.name && data.value) {
-							if (!data.owner && ownerData.owner) {
-								data.owner = ownerData.owner
-							}
-							if (!data.ownerId && ownerData.ownerId) {
-								data.ownerId = ownerData.ownerId
-							}
-							if (!data.spaceId && ownerData.spaceId) {
-								data.spaceId = ownerData.spaceId
-							}
-							return this.getAttribute(data).then(function (attr) {
-								if (attr) {
-									return attr.update(data);
-								} else {
-									Promise.reject('no valid attribute find to update!');
-								}
-							})
-								.then(function (attr) {
-									newAttr = attr;
-									if (data.grants) {
-										return Role.addGrants(data.grants, { owner: 'ProductAttribute', ownerId: attr._id, spaceId: attr.spaceId });
-									}
-									else {
-										return Promise.resolve(null);
-									}
-								}).then(function () {
-									return Promise.resolve(newAttr);
-								})
-						} else {
-							Promise.reject('please provide name and value!');
-						}
-					} else {
-						Promise.reject('invalid data!');
-					}
+				updateAttribute: function (updateData, findData) {
+					var treeObj = new TreeObj(this);
+					return treeObj.update(updateData, findData).then(function (o) {
+						return this.getAttribute(o);
+					});
 				},
 				addAttributes: function (listData, ownerData, checkExist) {
 					var that = this;
@@ -175,7 +236,7 @@ export default function (sequelize, DataTypes) {
 								}
 								if (typeof value === 'object') {
 									value.name = key;
-									theList.push(value);								
+									theList.push(value);
 								}
 							}
 						}
