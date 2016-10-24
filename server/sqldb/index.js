@@ -38,8 +38,8 @@ db.Timeslot = db.sequelize.import('../api/timeslot/timeslot.model');
 db.UserProfile = db.sequelize.import('../api/user/UserProfile.model');
 db.UserGroup = db.sequelize.import('../api/user/UserGroup.model');
 db.UserGroupRole = db.sequelize.import('../api/role/UserGroupRole.model');
-db.Product = db.sequelize.import('../api/product/Product.model');
-db.ProductType = db.sequelize.import('../api/product/ProductType.model');
-db.ProductAttribute = db.sequelize.import('../api/product/ProductAttribute.model');
+db.Product = db.sequelize.import('../api/product/product.model');
+db.ProductType = db.sequelize.import('../api/product/productType.model');
+db.ProductAttribute = db.sequelize.import('../api/product/productAttribute.model');
 
 export default db;
