@@ -28,6 +28,16 @@ var translationsZH = {
     REGISTERING: '注 册 中',
     BACKTOLOGIN: "返回登录",
   },
+  BIND_PAGE: {
+    NEWUSERBINDING: '绑定用户',
+    USERNAME: '用户名',
+    IDENTIFIERS: "@:LOGIN_PAGE.IDENTIFIERS",
+    PASSWORD: "@:LOGIN_PAGE.PASSWORD",
+    BINGUSER: '绑定',
+    BINDING: '绑 定 中',
+    BACKTOLOGIN: "返回登录",
+    BINDNEWUSER: "绑定新用户"
+  }
 };
 
 var translationsEN = {
@@ -53,8 +63,18 @@ var translationsEN = {
     CONFIRMPASSWORD: "Confirm Password",
     SIGNUP: "@:LOGIN_PAGE.SIGNUP",
     REGISTERING: "@:LOGIN_PAGE.SIGNUP",
-    BACKTOLOGIN: "Back to Login",
+    BACKTOLOGIN: "Back to Login"
   },
+    BIND_PAGE: {
+    NEWUSERBINDING: 'Bind User',
+    USERNAME: 'User Name',
+    IDENTIFIERS: "@:LOGIN_PAGE.IDENTIFIERS",
+    PASSWORD: "@:LOGIN_PAGE.PASSWORD",
+    BINGUSER: 'Bind',
+    BINDING: 'Binding...',
+    BACKTOLOGIN: "Back to Login",
+    BINDNEWUSER: "Bind New User"
+  }，
   NUT: {
     space: "space",
     role: "role",
