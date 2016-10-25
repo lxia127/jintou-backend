@@ -1,0 +1,61 @@
+<div class="login-container">
+  <div class="login-main">
+    <div class="login-header">
+      <div class="col-xs-12">
+        <div class="login-logo">
+          <i class="fa fa-globe"></i> {{'JINTOUFINANCECLOUD'|translate}}
+        </div>
+      </div>
+    </div>
+    <div class="login-body">
+      <div class="col-md-offset-6 col-lg-offset-7 col-xs-12 col-sm-12 col-md-6 col-lg-5">
+        <div class="login-panel" style="border-top-color: #5cb85c;">
+          <div class="login-box">
+            <h1>{{'BIND_PAGE.NEWUSERBINDING'|translate}}</h1>
+            <form class="form login-form" name="form" ng-submit="vm.bind(form)" novalidate>
+
+              <div class="form-group" ng-class="{ 'has-success': form.loginId.$valid && vm.submitted, 'has-error': form.loginId.$invalid && vm.submitted }">
+                <!--<label>Name</label>-->
+                <input type="text" name="loginId" class="form-control" ng-model="vm.user.loginId" placeholder={{'BIND_PAGE.IDENTIFIERS'|translate}} required/>
+                <p class="help-block" ng-show="form.loginId.$error.required && vm.submitted">
+                  A userId is required
+                </p>
+              </div>
+
+              <div class="form-group" ng-class="{ 'has-success': form.password.$valid && vm.submitted, 'has-error': form.password.$invalid && vm.submitted }">
+                <!--<label>Password</label>-->
+                <input type="password" name="password" class="form-control" ng-model="vm.user.password" placeholder={{'BIND_PAGE.PASSWORD'|translate}} ng-minlength="3" required mongoose-error>
+                <p class="help-block"
+                   ng-show="(form.password.$error.minlength || form.password.$error.required) && vm.submitted">
+                  Password must be at least 3 characters.
+                </p>
+                <p class="help-block" ng-show="form.password.$error.mongoose">
+                  {{ vm.errors.password }}
+                </p>
+              </div>
+
+              <div class="has-error">
+                <p class="help-block" ng-bind="vm.error.message"></p>
+              </div>
+
+              <button type="submit" class="btn btn-success btn-block" ng-disabled="vm.binding">
+                <bil-waitword waiting="{{'BIND_PAGE.BINDING'|translate}}" active="vm.binding">{{'BIND_PAGE.BINDUSER'|translate}}</bil-waitword>
+              </button>
+ 
+            </form>
+            <br/>
+            <p style="margin: 10px 0 0 0; text-align: left;">
+              <a class="btn btn-default" ui-sref="login">« {{'BIND_PAGE.BACKTOLOGIN'|translate}}</a>
+            </p>
+            <p style="margin: 10px 0 0 0; text-align: left;">
+              <a class="btn btn-default" ui-sref="bindNewUser">{{'BIND_PAGE.BINDNEWUSER'|translate}} »</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="login-footer">
+      © 2016 Billeen(Singapore)
+    </div>
+  </div>
+</div>

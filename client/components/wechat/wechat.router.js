@@ -24,8 +24,8 @@ angular.module('billynApp.core')
         authenticate: true
       })
       .state('wechat.auth', {
-        url: '/auth?openid',
-        templateUrl: 'components/wechat/views/login.html',
+        url: '/auth',
+        templateUrl: 'components/wechat/views/auth.html',
         controller: 'WechatController',
         controllerAs: 'vm',
         authenticate: true,

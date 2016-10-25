@@ -12,6 +12,10 @@
 import _ from 'lodash';
 import {Wechat} from '../../sqldb';
 import {User} from '../../sqldb';
+import config from '../../config/environment';
+import jwt from 'jsonwebtoken';
+import expressJwt from 'express-jwt';
+
 var request = require('request');
 
 var APPID = "wx72ab601de435b361";
@@ -176,9 +180,11 @@ export function wechatLogin(req, res)
                 User.find({where: {wechat: openid}}).then(function(user){
                   var result = user? true: false;
                   if(user){
-                    res.redirect("http://www.billyn.net/wechat/login?"+"result="+result+"&openid="+openid);
+                      var token = signToken(user._id,user.role);
+                      res.cookie('token', token);         
+                      res.redirect("http://www.billyn.net/wechat/auth");
                   } else {
-                    res.redirect("http://www.billyn.net/wechat/bind?"+"result="+result+"&openid="+openid);
+                      res.redirect("http://www.billyn.net/wechat/bind?openid="+openid);
                   }
                   
                 })
@@ -217,3 +223,10 @@ export function wechatOauthRedirect(req,res){
   
    res.redirect(url);
 }
+
+export function signToken(id, role) {
+  return jwt.sign({ _id: id, role: role }, config.secrets.session, {
+    expiresIn: 60 * 60 * 5
+  });
+}
+
