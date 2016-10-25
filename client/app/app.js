@@ -74,7 +74,7 @@ var translationsEN = {
     BINDING: 'Binding...',
     BACKTOLOGIN: "Back to Login",
     BINDNEWUSER: "Bind New User"
-  }，
+  },
   NUT: {
     space: "space",
     role: "role",
