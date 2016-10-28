@@ -1,0 +1,18 @@
+<div class="col-sm-10 b-r">
+    <form role="form">
+    <div class="form-group"><label>充值金额 </label>
+        <input ng-model="" type="text" placeholder="充值金额" class="form-control"></div>                       
+    <div class="form-group">
+        <label>充值方式 :</label>
+        <select ng-model="" class="form-control" required>
+            <option value="">支付宝</option>
+            <option value="">微信</option>
+            <option value="">百度钱包</option>
+            <option value="">QQ红包</option>
+        </select>
+    </div>
+    <div>
+        <button class="btn btn-sm btn-primary pull-right m-t-n-xs" type="submit" ng-click="vm.addRole()"><strong>确认充值</strong></button>
+    </div>
+    </form>
+</div>
