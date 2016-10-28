@@ -2,11 +2,11 @@
 
 import sqldb from '../../sqldb';
 import _ from 'lodash';
+var Promise = require('bluebird');
 import TreeObj from '../../sqldb/TreeObj';
 
-var Promise = require('bluebird');
 export default function (sequelize, DataTypes) {
-	return sequelize.define('Product', {
+	return sequelize.define('ProductType', {
 		_id: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
@@ -34,56 +34,46 @@ export default function (sequelize, DataTypes) {
 			type: DataTypes.INTEGER,
 			defaultValue: -1
 		},
-		typeId: {
-			type: DataTypes.INTEGER,
-			defaultValue: -1
-		},
 		active: DataTypes.BOOLEAN
 	}, {
 			classMethods: {
-				findProduct: function (data) {
+
+				findType: function (data) {
 					var treeObj = new TreeObj(this);
 					return treeObj.find(data);
 				},
-				//with full include
-				getProduct: function (data) {
+
+				getType: function (data) {
 					var that = this;
 					var ProductAttribute = sqldb.ProductAttribute;
-					var ProductType = sqldb.ProductType;
 					var PermitRole = sqldb.PermitRole;
-					this.belongsTo(ProductType, { as: 'type' });
 					var Permit = sqldb.Permit;
 					var Role = sqldb.Role;
 					PermitRole.belongsTo(sqldb.Permit, { as: 'permit' });
 					PermitRole.belongsTo(sqldb.Role, { as: 'role' });
-					this.hasMany(ProductAttribute, { as: 'attributes', foreignKey: "ownerId" });
-					ProductAttribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" });
-					return this.findProduct(data).then(function (product) {
-						if (product && product.Model) {
+					this.hasMany(ProductAttribute, { as: 'attributes', foreignKey: "ownerId" })
+					ProductAttribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" })
+					return this.findType(data).then(function (type) {
+						if (type && type.Model) {
 							return that.find({
 								where: {
-									_id: product._id
+									_id: type._id
 								},
 								include: [
 									{
-										model: ProductType, as: 'type'
-									},
-									{
 										model: ProductAttribute, as: 'attributes',
 										where: {
-											owner: 'Product'
+											owner: 'ProductType'
 										},
 										include: [
 											{
 												model: PermitRole, as: "permits",
 												include: [
 													{
-														model: Permit, as: 'permit',
-														required: false
+														model: Permit, as: 'permit'
 													},
 													{
-														model: Role, as: 'role',
-														required: false
+														model: Role, as: 'role'
 													}
 												],
 												required: false,
@@ -101,12 +91,10 @@ export default function (sequelize, DataTypes) {
 					})
 				},
 
-				getProducts: function (data) {
+				getTypes: function (data) {
 					var that = this;
 					var ProductAttribute = sqldb.ProductAttribute;
 					var PermitRole = sqldb.PermitRole;
-					var ProductType = sqldb.ProductType;
-					this.belongsTo(ProductType, { as: 'type' });
 					var Permit = sqldb.Permit;
 					var Role = sqldb.Role;
 					PermitRole.belongsTo(sqldb.Permit, { as: 'permit' });
@@ -119,24 +107,19 @@ export default function (sequelize, DataTypes) {
 							where: data,
 							include: [
 								{
-									model: ProductType, as: 'type'
-								},
-								{
 									model: ProductAttribute, as: 'attributes',
 									where: {
-										owner: 'Product'
+										owner: 'ProductType'
 									},
 									include: [
 										{
 											model: PermitRole, as: "permits",
 											include: [
 												{
-													model: Permit, as: 'permit',
-													required: false
+													model: Permit, as: 'permit'
 												},
 												{
-													model: Role, as: 'role',
-													required: false
+													model: Role, as: 'role'
 												}
 											],
 											required: false,
@@ -153,69 +136,37 @@ export default function (sequelize, DataTypes) {
 					}
 				},
 
-				addProduct: function (productData, ownerData) {
+				addType: function (typeData, ownerData) {
 					var that = this;
 					var treeObj = new TreeObj(this);
 					var Attribute = sqldb.ProductAttribute;
-					var ProductType = sqldb.ProductType;
-					var theProduct;
-
-					return new Promise(function (resolve, reject) {
-						if (productData.type && (productData.spaceId || ownerData.spaceId)) {
-							var typeData = {};
-							typeData.spaceId = productData.spaceId || ownerData.spaceId;
-							if (typeof productData.type === 'string') {
-								typeData.name = productData.type;
-							}
-							if (typeof productData.type === 'object') {
-								typeData = productData.type;
-							}
-							if (typeData.name && typeData.spaceId) {
-								return ProductType.findType(typeData).then(function (o) {
-									return resolve(o);
-								});
-							} else {
-								return reject('please provide type name and spaceId');
-							}
-						}
-					}).then(function (type) {
+					var theType;
+					return treeObj.findOrCreate(typeData, ownerData).then(function (type) {
 						if (type) {
-							productData.typeId = type._id;
-							return treeObj.findOrCreate(productData, ownerData)
-						}
-						else {
-							return Promise.reject('not find type');
-						}
-					}).then(function (product) {
-						if (product) {
-							theProduct = product;
+							theType = type;
 							var ownerData = {
-								owner: 'Product',
-								ownerId: product._id,
-								spaceId: product.spaceId
+								owner: 'ProductType',
+								ownerId: type._id,
+								spaceId: type.spaceId
 							}
-							if (productData.attributes) {
-								return Attribute.addAttributes(productData.attributes, ownerData);
+							if (typeData.attributes) {
+								return Attribute.addAttributes(typeData.attributes, ownerData);
 							} else {
-								return Promise.resolve(product);
+								return Promise.resolve(type);
 							}
-						} else {
-							Promise.reject('fail to create product!');
 						}
 					}).then(function () {
-						return that.getProduct(theProduct);
-					}).catch(function (err) {
-						console.log('error:', err);
+						return that.getType(theType);
 					})
 				},
 
-				addProducts: function (listData, ownerData) {
+				addTypes: function (listData, ownerData) {
 					var that = this;
 					if (Array.isArray(listData)) {
 						var finalList = [];
 						return Promise.each(listData, function (data) {
-							return that.addProduct(data, ownerData).then(function (product) {
-								finalList.push(product);
+							return that.addType(data, ownerData).then(function (type) {
+								finalList.push(type);
 								return Promise.resolve(null);
 							});
 						}).then(function () {
@@ -226,10 +177,10 @@ export default function (sequelize, DataTypes) {
 					}
 				},
 
-				updateProduct: function (updateData, findData) {
+				updateType: function (updateData, findData) {
 					var treeObj = new TreeObj(this);
-					return treeObj.update(updateData, findData).then(function (p) {
-						return this.getProduct(p);
+					return treeObj.update(updateData, findData).then(function (oType) {
+						return this.getType(oType);
 					});
 				},
 			},
@@ -237,7 +188,7 @@ export default function (sequelize, DataTypes) {
 				addAttribute: function (data) {
 					var Attribute = sqldb.ProductAttribute;
 					var ownerData = {
-						owner: "Product",
+						owner: "ProductType",
 						ownerId: this._id,
 						spaceId: this.spaceId
 					}
@@ -246,7 +197,7 @@ export default function (sequelize, DataTypes) {
 				addAttributes: function (listData) {
 					var Attribute = sqldb.ProductAttribute;
 					var ownerData = {
-						owner: "Product",
+						owner: "ProductType",
 						ownerId: this._id,
 						spaceId: this.spaceId
 					}
