@@ -116,9 +116,9 @@
 			"nuts": {
 				"product": {
 					"grants": {
-						"admin": "admin",
-						"member": "manage",
-						"client": "client"
+						"admin": "admin|产品设置",
+						"member": "manage|产品管理",
+						"client": "client|产品服务"
 					}
 				}				
 			}

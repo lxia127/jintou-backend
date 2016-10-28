@@ -27,7 +27,7 @@ angular.module('billynApp.core')
                   for (var i = 0; i < permitNuts.length; i++) {
                     if (permitNuts[i].nut && permitNuts[i].nut.name === 'product') {
                       $rootScope.current.nut.permits.push(permitNuts[i].permit);
-                    }
+                    } 
                   }
                 });
               }) :
@@ -61,6 +61,55 @@ angular.module('billynApp.core')
       .state('pc.space.app.product.manage.home', {
         url: '/home',
         templateUrl: 'components/blyn/nuts/product/view/manage.html',
+        controller: 'ProductManageController',
+        controllerAs: 'vm',
+        ncyBreadcrumb: { skip: true }
+      })
+      .state('pc.space.app.product.manage.zsy', {
+        url: '/zsy',
+        template: '<div ui-view=""></div>',
+        controller: 'ProductManageController',
+        controllerAs: 'vm',
+        ncyBreadcrumb: { skip: true }
+      })
+      .state('pc.space.app.product.manage.zsy.productList', {
+        url: '/productList',
+        templateUrl: 'components/blyn/nuts/product/view/mycube/zsyCardList.html',
+        controller: 'ProductManageController',
+        controllerAs: 'vm',
+        ncyBreadcrumb: { skip: true }
+      })
+      .state('pc.space.app.product.manage.zsy.newcard', {
+        url: '/newcard',
+        templateUrl: 'components/blyn/nuts/product/view/mycube/zsynewCard.html',
+        controller: 'ProductManageController',
+        controllerAs: 'vm',
+        ncyBreadcrumb: { skip: true }
+      })
+      .state('pc.space.app.product.manage.zsy.rechange', {
+        url: '/rechange',
+        templateUrl: 'components/blyn/nuts/product/view/mycube/zsyfirstRechange.html',
+        controller: 'ProductManageController',
+        controllerAs: 'vm',
+        ncyBreadcrumb: { skip: true }
+      })
+      .state('pc.space.app.product.manage.zsy.modify', {
+        url: '/modify',
+        templateUrl: 'components/blyn/nuts/product/view/mycube/zsyModify.html',
+        controller: 'ProductManageController',
+        controllerAs: 'vm',
+        ncyBreadcrumb: { skip: true }
+      })
+      .state('pc.space.app.product.manage.jyz', {
+        url: '/jyz',
+        template: '<div ui-view=""></div>',
+        controller: 'ProductManageController',
+        controllerAs: 'vm',
+        ncyBreadcrumb: { skip: true }
+      })
+      .state('pc.space.app.product.manage.jyz.productList', {
+        url: '/productList',
+        templateUrl: 'components/blyn/nuts/product/view/mycube/jyzList.html',
         controller: 'ProductManageController',
         controllerAs: 'vm',
         ncyBreadcrumb: { skip: true }
