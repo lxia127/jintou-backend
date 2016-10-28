@@ -1,29 +1,33 @@
 'use strict';
 
 var express = require('express');
-var controller = require('./voucher.controller');
+var controller = require('./product.controller');
 
 var router = express.Router();
 
+//for attributes
+router.get('/attributes', controller.getAttributes);
+router.get('/attributes/:id', controller.getAttribute);
+router.post('/attributes', controller.addAttribute);
+router.post('/attributes/batch', controller.addAttributes);
+router.put('/attributes/:id', controller.updateAttribute);
+router.delete('/attributes/:id', controller.deleteAttribute);
+
+//for types
+router.get('/types', controller.getTypes);
+router.get('/types/:id', controller.getType);
+router.post('/types', controller.addType);
+router.post('/types/batch', controller.addTypes);
+router.put('/types/:id', controller.updateType);
+router.delete('types/:id', controller.deleteType);
+
 //default function for voucher table
-router.get('/', controller.index);
-router.get('/:id', controller.show);
-router.post('/', controller.create);
-router.put('/:id', controller.update);
-router.delete('/:id', controller.destroy);
+router.get('/', controller.getProducts);
+router.get('/:id', controller.getProduct);
+router.post('/', controller.addProduct);
+router.post('/batch', controller.addProducts);
+router.put('/:id', controller.updateProduct);
+router.delete('/:id', controller.deleteProduct);
 
-//for user voucher table
-router.get('/vuser', controller.findAllUserVoucher);
-router.get('/:id/vuser', controller.findUserVoucher);
-router.post('/vuser/', controller.createUserVoucher);
-router.put('/:id/vuser', controller.updateUserVoucher);
-router.delete('/:id/vuser', controller.deleteUserVoucher);
-
-//for group trade table
-router.get('/gtrade', controller.findAllGroupTrade);
-router.get('/:id/gtrade', controller.findGroupTrade);
-router.post('/gtrade/', controller.createGroupTrade);
-router.put('/:id/gtrade', controller.updateGroupTrade);
-router.delete('/:id/gtrade', controller.deleteGroupTrade);
 
 module.exports = router;

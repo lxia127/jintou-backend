@@ -1,0 +1,26 @@
+{
+	"name":"product1",
+	"alias":"product1",
+    "type":"type1",
+	"attributes":{
+		"a1":{
+			"value":"v1"
+		},
+		"a2":"v2",
+		"a3":{
+			"value":"v3"
+		},
+		"a4":{
+			"value":"a4",
+			"grants":{
+				"client":"allow.input"
+			}
+		},
+		"a5":{
+			"value":"a5",
+			"grants":{
+				"client":"allow.input"
+			}
+		}
+	}
+}
