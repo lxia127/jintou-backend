@@ -6,7 +6,7 @@ var Promise = require('bluebird');
 import TreeObj from '../../sqldb/TreeObj';
 
 export default function (sequelize, DataTypes) {
-	return sequelize.define('ProductType', {
+	return sequelize.define('SaleListType', {
 		_id: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
@@ -45,14 +45,14 @@ export default function (sequelize, DataTypes) {
 
 				getType: function (data) {
 					var that = this;
-					var ProductAttribute = sqldb.ProductAttribute;
+					var Attribute = sqldb.SaleListAttribute;
 					var PermitRole = sqldb.PermitRole;
 					var Permit = sqldb.Permit;
 					var Role = sqldb.Role;
 					PermitRole.belongsTo(sqldb.Permit, { as: 'permit' });
 					PermitRole.belongsTo(sqldb.Role, { as: 'role' });
-					this.hasMany(ProductAttribute, { as: 'attributes', foreignKey: "ownerId" })
-					ProductAttribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" })
+					this.hasMany(Attribute, { as: 'attributes', foreignKey: "ownerId" })
+					Attribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" })
 					return this.findType(data).then(function (type) {
 						if (type && type.Model) {
 							return that.find({
@@ -61,9 +61,9 @@ export default function (sequelize, DataTypes) {
 								},
 								include: [
 									{
-										model: ProductAttribute, as: 'attributes',
+										model: SaleListAttribute, as: 'attributes',
 										where: {
-											owner: 'ProductType'
+											owner: 'SaleListType'
 										},
 										include: [
 											{
@@ -78,7 +78,7 @@ export default function (sequelize, DataTypes) {
 												],
 												required: false,
 												where: {
-													owner: 'ProductAttribute'
+													owner: 'SaleListAttribute'
 												}
 											}
 										]
@@ -93,23 +93,23 @@ export default function (sequelize, DataTypes) {
 
 				getTypes: function (data) {
 					var that = this;
-					var ProductAttribute = sqldb.ProductAttribute;
+					var Attribute = sqldb.SaleListAttribute;
 					var PermitRole = sqldb.PermitRole;
 					var Permit = sqldb.Permit;
 					var Role = sqldb.Role;
 					PermitRole.belongsTo(sqldb.Permit, { as: 'permit' });
 					PermitRole.belongsTo(sqldb.Role, { as: 'role' });
-					this.hasMany(ProductAttribute, { as: 'attributes', foreignKey: "ownerId" });
-					ProductAttribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" });
+					this.hasMany(Attribute, { as: 'attributes', foreignKey: "ownerId" });
+					Attribute.hasMany(PermitRole, { as: 'permits', foreignKey: "ownerId" });
 
 					if (typeof data === 'object' && Object.keys(data).length > 0) {
 						return that.findAll({
 							where: data,
 							include: [
 								{
-									model: ProductAttribute, as: 'attributes',
+									model: SaleListAttribute, as: 'attributes',
 									where: {
-										owner: 'ProductType'
+										owner: 'SaleListType'
 									},
 									include: [
 										{
@@ -124,7 +124,7 @@ export default function (sequelize, DataTypes) {
 											],
 											required: false,
 											where: {
-												owner: 'ProductAttribute'
+												owner: 'SaleListAttribute'
 											}
 										}
 									]
@@ -139,13 +139,13 @@ export default function (sequelize, DataTypes) {
 				addType: function (typeData, ownerData) {
 					var that = this;
 					var treeObj = new TreeObj(this);
-					var Attribute = sqldb.ProductAttribute;
+					var Attribute = sqldb.SaleListAttribute;
 					var theType;
 					return treeObj.findOrCreate(typeData, ownerData).then(function (type) {
 						if (type) {
 							theType = type;
 							var ownerData = {
-								owner: 'ProductType',
+								owner: 'SaleListType',
 								ownerId: type._id,
 								spaceId: type.spaceId
 							}
@@ -186,18 +186,18 @@ export default function (sequelize, DataTypes) {
 			},
 			instanceMethods: {
 				addAttribute: function (data) {
-					var Attribute = sqldb.ProductAttribute;
+					var Attribute = sqldb.SaleListAttribute;
 					var ownerData = {
-						owner: "ProductType",
+						owner: "SaleListType",
 						ownerId: this._id,
 						spaceId: this.spaceId
 					}
 					return Atrribute.addAttribute(data, ownerData);
 				},
 				addAttributes: function (listData) {
-					var Attribute = sqldb.ProductAttribute;
+					var Attribute = sqldb.SaleListAttribute;
 					var ownerData = {
-						owner: "ProductType",
+						owner: "SaleListType",
 						ownerId: this._id,
 						spaceId: this.spaceId
 					}

@@ -1,33 +1,33 @@
 'use strict';
 
 var express = require('express');
-var controller = require('./product.controller');
+var slController = require('./saleList.controller');
 
 var router = express.Router();
 
-//for attributes
-router.get('/attributes', controller.getAttributes);
-router.get('/attributes/:id', controller.getAttribute);
-router.post('/attributes', controller.addAttribute);
-router.post('/attributes/batch', controller.addAttributes);
-router.put('/attributes/:id', controller.updateAttribute);
-router.delete('/attributes/:id', controller.deleteAttribute);
+//for saleList attributes
+router.get('/saleLists/attributes', slController.getAttributes);
+router.get('/saleLists/attributes/:id', slController.getAttribute);
+router.post('/saleLists/attributes', slController.addAttribute);
+router.post('/saleLists/attributes/batch', slController.addAttributes);
+router.put('/saleLists/attributes/:id', slController.updateAttribute);
+router.delete('/saleLists/attributes/:id', slController.deleteAttribute);
 
-//for types
-router.get('/types', controller.getTypes);
-router.get('/types/:id', controller.getType);
-router.post('/types', controller.addType);
-router.post('/types/batch', controller.addTypes);
-router.put('/types/:id', controller.updateType);
-router.delete('types/:id', controller.deleteType);
+//for saleList types
+router.get('/saleLists/types', slController.getTypes);
+router.get('/saleLists/types/:id', slController.getType);
+router.post('/saleLists/types', slController.addType);
+router.post('/saleLists/types/batch', slController.addTypes);
+router.put('/saleLists/types/:id', slController.updateType);
+router.delete('saleLists/types/:id', slController.deleteType);
 
-//default function for voucher table
-router.get('/', controller.getProducts);
-router.get('/:id', controller.getProduct);
-router.post('/', controller.addProduct);
-router.post('/batch', controller.addProducts);
-router.put('/:id', controller.updateProduct);
-router.delete('/:id', controller.deleteProduct);
+//default function for saleList table
+router.get('/saleLists', slController.getSaleLists);
+router.get('/saleLists/:id', slController.getSaleLists);
+router.post('/saleLists', slController.addSaleList);
+router.post('/saleLists/batch', slController.addSaleLists);
+router.put('/saleLists/:id', slController.updateSaleList);
+router.delete('/saleLists/:id', slController.deleteSaleList);
 
 
 module.exports = router;

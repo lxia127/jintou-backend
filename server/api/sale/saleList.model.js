@@ -125,7 +125,7 @@ export default function (sequelize, DataTypes) {
 					var SaleListAttribute = sqldb.SaleListAttribute;
 					var PermitRole = sqldb.PermitRole;
 					var SaleListType = sqldb.SaleListType;
-					this.belongsTo(ProductType, { as: 'type' });
+					this.belongsTo(SaleListType, { as: 'type' });
 					var Permit = sqldb.Permit;
 					var Role = sqldb.Role;
 					PermitRole.belongsTo(sqldb.Permit, { as: 'permit' });
@@ -191,7 +191,7 @@ export default function (sequelize, DataTypes) {
 								typeData = saleListData.type;
 							}
 							if (typeData.name && typeData.spaceId) {
-								return ProductType.findType(typeData).then(function (o) {
+								return SaleListType.findType(typeData).then(function (o) {
 									return resolve(o);
 								});
 							} else {
@@ -208,9 +208,9 @@ export default function (sequelize, DataTypes) {
 						}
 					}).then(function (saleList) {
 						if (saleList) {
-							theProduct = saleList;
+							theSaleList = saleList;
 							var ownerData = {
-								owner: 'Product',
+								owner: 'SaleList',
 								ownerId: saleList._id,
 								spaceId: saleList.spaceId
 							}
@@ -220,10 +220,10 @@ export default function (sequelize, DataTypes) {
 								return Promise.resolve(saleList);
 							}
 						} else {
-							Promise.reject('fail to create product!');
+							Promise.reject('fail to create saleList!');
 						}
 					}).then(function () {
-						return that.getProduct(theProduct);
+						return that.getSaleList(theSaleList);
 					}).catch(function (err) {
 						console.log('error:', err);
 					})
@@ -234,8 +234,8 @@ export default function (sequelize, DataTypes) {
 					if (Array.isArray(listData)) {
 						var finalList = [];
 						return Promise.each(listData, function (data) {
-							return that.addProduct(data, ownerData).then(function (product) {
-								finalList.push(product);
+							return that.addSaleList(data, ownerData).then(function (saleList) {
+								finalList.push(saleList);
 								return Promise.resolve(null);
 							});
 						}).then(function () {
@@ -249,24 +249,24 @@ export default function (sequelize, DataTypes) {
 				updateSaleList: function (updateData, findData) {
 					var treeObj = new TreeObj(this);
 					return treeObj.update(updateData, findData).then(function (p) {
-						return this.getProduct(p);
+						return this.getSaleList(p);
 					});
 				},
 			},
 			instanceMethods: {
 				addAttribute: function (data) {
-					var Attribute = sqldb.ProductAttribute;
+					var Attribute = sqldb.SaleListAttribute;
 					var ownerData = {
-						owner: "Product",
+						owner: "SaleList",
 						ownerId: this._id,
 						spaceId: this.spaceId
 					}
 					return Atrribute.addAttribute(data, ownerData);
 				},
 				addAttributes: function (listData) {
-					var Attribute = sqldb.ProductAttribute;
+					var Attribute = sqldb.SaleListAttribute;
 					var ownerData = {
-						owner: "Product",
+						owner: "SaleList",
 						ownerId: this._id,
 						spaceId: this.spaceId
 					}

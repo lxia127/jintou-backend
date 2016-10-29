@@ -6,7 +6,7 @@ import TreeObj from '../../sqldb/TreeObj';
 var Promise = require('bluebird');
 
 export default function (sequelize, DataTypes) {
-	return sequelize.define('ProductAttribute', {
+	return sequelize.define('SaleListAttribute', {
 		_id: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
@@ -68,10 +68,10 @@ export default function (sequelize, DataTypes) {
 								where: whereData
 							})
 						} else {
-							Promise.reject('please provide invalid data!');
+							Promise.reject('please provide valid data!');
 						}
 					} else {
-						Promise.reject('please provide invalid data!');
+						Promise.reject('please provide valid data!');
 					}
 				},
 				getAttribute: function (data) {
@@ -112,16 +112,16 @@ export default function (sequelize, DataTypes) {
 											}
 										],
 										where: {
-											owner: 'ProductAttribute'
+											owner: 'SaleListAttribute'
 										}
 									}
 								]
 							})
 						} else {
-							Promise.reject('please provide invalid data!');
+							Promise.reject('please provide valid data!');
 						}
 					} else {
-						Promise.reject('please provide invalid data!');
+						Promise.reject('please provide valid data!');
 					}
 				},
 				getAttributes: function (data) {
@@ -154,7 +154,7 @@ export default function (sequelize, DataTypes) {
 											}
 										],
 										where: {
-											owner: 'ProductAttribute'
+											owner: 'SaleListAttribute'
 										}
 									}
 								]
@@ -196,7 +196,7 @@ export default function (sequelize, DataTypes) {
 							}).then(function (attr) {
 								newAttr = attr;
 								if (data.grants) {
-									return Role.addGrants(data.grants, { owner: 'ProductAttribute', ownerId: attr._id, spaceId: attr.spaceId });
+									return Role.addGrants(data.grants, { owner: 'SaleListAttribute', ownerId: attr._id, spaceId: attr.spaceId });
 								}
 								else {
 									return Promise.resolve(null);
