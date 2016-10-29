@@ -165,11 +165,15 @@ export function addType(req, res) {
   var query = req.query;
   var body = req.body;
 
-  if (!query.spaceId) {
-    return res.status(500).send('please provide spaceId in query');
+  if (!query.spaceId && !body.spaceId) {
+    return res.status(500).send('please provide spaceId!');
   }
 
-  return ProductType.addType(req.body, { spaceId: query.spaceId })
+  if(query.spaceId){
+    req.body.spaceId = query.spaceId;
+  }
+
+  return ProductType.addType(req.body)
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
