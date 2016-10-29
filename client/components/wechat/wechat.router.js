@@ -21,7 +21,7 @@ angular.module('billynApp.core')
         templateUrl: 'components/wechat/views/bind.html',
         controller: 'WechatController',
         controllerAs: 'vm',
-        authenticate: true
+        authenticate: false
       })
       .state('wechat.auth', {
         url: '/auth',
