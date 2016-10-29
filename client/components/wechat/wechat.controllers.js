@@ -9,6 +9,12 @@
         
     }
 
+    class WechatBindController{
+        constructor($state, $stateParams, $rootScope, BNut) {
+            var test = 'test';
+        }
+    }
+    
     class CircleHomeController {
         constructor($state, $stateParams, $rootScope, BNut, BCircle) {
             var ctrl = this;
@@ -622,5 +628,6 @@
         .controller('JoinCircleCollabController', JoinCircleCollabController)
         .controller('CircleMemberController', CircleMemberController)
         .controller('CircleMemberSpacesController', CircleMemberSpacesController)
-        .controller('CreateCircleController', CreateCircleController);
+        .controller('CreateCircleController', CreateCircleController)
+        .controller('WechatBindController', WechatBindController);
 })();
