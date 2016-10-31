@@ -10,9 +10,9 @@
 'use strict';
 
 import _ from 'lodash';
-import { ProductType } from '../../sqldb';
-import { Product } from '../../sqldb';
-import { ProductAttribute } from '../../sqldb';
+import { SaleListType } from '../../sqldb';
+import { SaleList } from '../../sqldb';
+import { SaleListAttribute } from '../../sqldb';
 var Promise = require('bluebird');
 
 
@@ -63,14 +63,14 @@ function handleError(res, statusCode) {
 }
 
 /**
- * @desc {POST http://hostname/api/products/types}
+ * @desc {POST http://hostname/api/saleLists/types}
  * 这个函数用来创建新的产品类型。函数首先会在数据库中查找，如果发现已经存在，不会操作。
  * 如果没有发现类型，就进行创建
  * @param {object} req.body type data for add new type
  * @return {json} json object for new type
  * @example
  * POST
- * http://hostname/api/products/types
+ * http://hostname/api/saleLists/types
  * req.body example:
       {
           "name": "type1",
@@ -107,7 +107,7 @@ function handleError(res, statusCode) {
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -122,7 +122,7 @@ function handleError(res, statusCode) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -134,7 +134,7 @@ function handleError(res, statusCode) {
           {
             "_id": 7,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr2",
             "fullname": null,
@@ -149,7 +149,7 @@ function handleError(res, statusCode) {
             "permits": [
               {
                 "_id": 41,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 7,
                 "permitId": 67,
                 "roleId": 13,
@@ -173,20 +173,20 @@ export function addType(req, res) {
     req.body.spaceId = query.spaceId;
   }
 
-  return ProductType.addType(req.body)
+  return SaleListType.addType(req.body)
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
 /**
- * @desc {POST http://hostname/api/products/types/batch}
+ * @desc {POST http://hostname/api/saleLists/types/batch}
  * 这个函数用来批量创建新的产品类型。默认情况下，函数首先会在数据库中查找，如果发现已经存在，不会操作。
  * 如果没有发现类型，就进行创建
  * @param {typeData[]} req.body array for type data
  * @return {type[]} list of new created type
  * @example
  * POST
- * http://hostname/api/products/types/batch
+ * http://hostname/api/saleLists/types/batch
  * req.body example:
       [{
           "name": "type1",
@@ -242,7 +242,7 @@ export function addType(req, res) {
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -257,7 +257,7 @@ export function addType(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -269,7 +269,7 @@ export function addType(req, res) {
           {
             "_id": 7,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr2",
             "fullname": null,
@@ -284,7 +284,7 @@ export function addType(req, res) {
             "permits": [
               {
                 "_id": 41,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 7,
                 "permitId": 67,
                 "roleId": 13,
@@ -306,22 +306,22 @@ export function addTypes(req, res) {
     return res.status(500).send('please provide spaceId in query');
   }
 
-  return ProductType.addTypes(req.body, { spaceId: req.query.spaceId })
+  return SaleListType.addTypes(req.body, { spaceId: req.query.spaceId })
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
 /**
- * @desc {GET http://hostname/api/products/types/:id[?spaceId=xxx]}
+ * @desc {GET http://hostname/api/saleLists/types/:id[?spaceId=xxx]}
  * 这个函数用来获取某一个类型。如果:id是integer，用id获取type.如果:id是name,同时提供spaceId，
  * 也可以用typename来获取type
  * @param {integer or string} req.params.id[req.query.spaceId]
  * @return {json} json object for type
  * @example
  * GET
- * http://hostname/api/products/types/5
+ * http://hostname/api/saleLists/types/5
  * or
- * http://hostname/api/products/types/type1?spaceId=2
+ * http://hostname/api/saleLists/types/type1?spaceId=2
  * type1 is name of type
  * @example
  * json result example
@@ -340,7 +340,7 @@ export function addTypes(req, res) {
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -355,7 +355,7 @@ export function addTypes(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -367,7 +367,7 @@ export function addTypes(req, res) {
           {
             "_id": 7,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr2",
             "fullname": null,
@@ -382,7 +382,7 @@ export function addTypes(req, res) {
             "permits": [
               {
                 "_id": 41,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 7,
                 "permitId": 67,
                 "roleId": 13,
@@ -404,12 +404,12 @@ export function getType(req, res) {
   }
 
   if (!isNaN(id) && id > 0) {
-    return ProductType.getType(id)
+    return SaleListType.getType(id)
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
   } else if (id && spaceId) {
-    return ProductType.getType({
+    return SaleListType.getType({
       name: id,
       spaceId: spaceId
     })
@@ -422,13 +422,13 @@ export function getType(req, res) {
 }
 
 /**
- * @desc {GET http://hostname/api/products/types?spaceId=xxx}
+ * @desc {GET http://hostname/api/saleLists/types?spaceId=xxx}
  * 这个函数用来获取类型的数组。通常提供spaceId来获取机构的所有类型，
  * @param {integer} req.query.spaceId
  * @return {json} json object array for type
  * @example
  * GET
- * http://hostname/api/products/types?spaceId=2
+ * http://hostname/api/saleLists/types?spaceId=2
  * @example
  * json result example
       [{
@@ -446,7 +446,7 @@ export function getType(req, res) {
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -461,7 +461,7 @@ export function getType(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -473,7 +473,7 @@ export function getType(req, res) {
           {
             "_id": 7,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr2",
             "fullname": null,
@@ -488,7 +488,7 @@ export function getType(req, res) {
             "permits": [
               {
                 "_id": 41,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 7,
                 "permitId": 67,
                 "roleId": 13,
@@ -503,7 +503,7 @@ export function getType(req, res) {
  */
 export function getTypes(req, res) {
   if (req.query && req.query.spaceId) {
-    return ProductType.getTypes(req.query)
+    return SaleListType.getTypes(req.query)
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
@@ -513,14 +513,14 @@ export function getTypes(req, res) {
 }
 
 /**
- * @desc {PUT http://hostname/api/products/types/:id}
+ * @desc {PUT http://hostname/api/saleLists/types/:id}
  * 这个函数用来更新产品类型。
  * @param {object} req.body type data for updating
  * @param {integer} req.params.id 属性的id
  * @return {json} json object for new type
  * @example
  * PUT
- * http://hostname/api/products/types/5
+ * http://hostname/api/saleLists/types/5
  * req.body example:
       {
           "name": "type2",
@@ -543,7 +543,7 @@ export function getTypes(req, res) {
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -558,7 +558,7 @@ export function getTypes(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -570,7 +570,7 @@ export function getTypes(req, res) {
           {
             "_id": 7,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr2",
             "fullname": null,
@@ -585,7 +585,7 @@ export function getTypes(req, res) {
             "permits": [
               {
                 "_id": 41,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 7,
                 "permitId": 67,
                 "roleId": 13,
@@ -601,42 +601,42 @@ export function updateType(req, res) {
   var id = req.params.id;
   var body = req.body;
 
-  return ProductType.updateType(req.body, req.params.id)
+  return SaleListType.updateType(req.body, req.params.id)
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
 /**
- * @desc {DELETE http://hostname/api/products/types/:id}
+ * @desc {DELETE http://hostname/api/saleLists/types/:id}
  * 这个函数用来删除类型。
  * @param {object} req.params.id 
  * @return {result} return true after deleted, otherwise return false
  * @example
  * DELETE
- * http://hostname/api/products/types/5
+ * http://hostname/api/saleLists/types/5
  * 
  */
 export function deleteType(req, res) {
-  ProductType.findById(req.params.id)
+  SaleListType.findById(req.params.id)
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));
 }
 
 /**
- * @desc {POST http://hostname/api/products}
+ * @desc {POST http://hostname/api/saleLists}
  * 这个函数用来创建新的产品。函数首先会在数据库中查找，如果发现已经存在，不会操作。
  * 如果没有发现类型，就进行创建
- * @param {object} req.body product data for add new product
- * @return {json} json object for new product
+ * @param {object} req.body saleList data for add new saleList
+ * @return {json} json object for new saleList
  * @example
  * POST
- * http://hostname/api/products
+ * http://hostname/api/saleLists
  * req.body example:
       {
-          "name": "product1",
-          "alias": "product1 alias",
+          "name": "saleList1",
+          "alias": "saleList1 alias",
           "attributes": {
               "attr1": {
                   "value": "value1",
@@ -657,7 +657,7 @@ export function deleteType(req, res) {
       {
         "_id": 2,
         "parentId": -1,
-        "name": "product1",
+        "name": "saleList1",
         "fullname": null,
         "alias": null,
         "description": null,
@@ -672,7 +672,7 @@ export function deleteType(req, res) {
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -687,7 +687,7 @@ export function deleteType(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -699,7 +699,7 @@ export function deleteType(req, res) {
           {
             "_id": 7,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr2",
             "fullname": null,
@@ -714,7 +714,7 @@ export function deleteType(req, res) {
             "permits": [
               {
                 "_id": 41,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 7,
                 "permitId": 67,
                 "roleId": 13,
@@ -727,7 +727,7 @@ export function deleteType(req, res) {
         }
       }
  */
-export function addProduct(req, res) {
+export function addSaleList(req, res) {
   var query = req.query;
   var body = req.body;
 
@@ -735,24 +735,24 @@ export function addProduct(req, res) {
     return res.status(500).send('please provide spaceId in query');
   }
 
-  return Product.addProduct(req.body, { spaceId: query.spaceId })
+  return SaleList.addSaleList(req.body, { spaceId: query.spaceId })
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
 /**
- * @desc {POST http://hostname/api/products/batch}
+ * @desc {POST http://hostname/api/saleLists/batch}
  * 这个函数用来批量创建新的产品。默认情况下，函数首先会在数据库中查找，如果发现已经存在，不会操作。
  * 如果没有发现类型，就进行创建
- * @param {productData[]} req.body array for product data
- * @return {product[]} list of new created product
+ * @param {saleListData[]} req.body array for saleList data
+ * @return {saleList[]} list of new created saleList
  * @example
  * POST
- * http://hostname/api/products/batch
+ * http://hostname/api/saleLists/batch
  * req.body example:
       [{
-          "name": "product1",
-          "alias": "product1 alias",
+          "name": "saleList1",
+          "alias": "saleList1 alias",
           "typeId":2,
           "type":{
           "attributes": {
@@ -777,7 +777,7 @@ export function addProduct(req, res) {
       [{
         "_id": 2,
         "parentId": -1,
-        "name": "product1",
+        "name": "saleList1",
         "fullname": null,
         "alias": null,
         "description": null,
@@ -791,7 +791,7 @@ export function addProduct(req, res) {
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -806,7 +806,7 @@ export function addProduct(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -820,7 +820,7 @@ export function addProduct(req, res) {
       ....
       ]
  */
-export function addProducts(req, res) {
+export function addSaleLists(req, res) {
   var query = req.query;
   var body = req.body;
 
@@ -828,30 +828,30 @@ export function addProducts(req, res) {
     return res.status(500).send('please provide spaceId in query');
   }
 
-  return Product.addProducts(req.body, { spaceId: req.query.spaceId })
+  return SaleList.addSaleLists(req.body, { spaceId: req.query.spaceId })
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
 /**
- * @desc {GET http://hostname/api/products/:id[?spaceId=xxx]}
- * 这个函数用来获取某一个产品。如果:id是integer，用id获取product.如果:id是name,同时提供spaceId，
- * 也可以用typename来获取product
+ * @desc {GET http://hostname/api/saleLists/:id[?spaceId=xxx]}
+ * 这个函数用来获取某一个产品。如果:id是integer，用id获取saleList.如果:id是name,同时提供spaceId，
+ * 也可以用typename来获取saleList
  * @param {integer or string} req.params.id[req.query.spaceId]
- * @return {json} json object for product
+ * @return {json} json object for saleList
  * @example
  * GET
- * http://hostname/api/products/5
+ * http://hostname/api/saleLists/5
  * or
- * http://hostname/api/products/product1?spaceId=2
+ * http://hostname/api/saleLists/saleList1?spaceId=2
  * type1 is name of type
  * @example
  * json result example
       {
         "_id": 2,
         "parentId": -1,
-        "name": "product1",
-        "fullname": "product1",
+        "name": "saleList1",
+        "fullname": "saleList1",
         "alias": null,
         "description": null,
         "data": null,
@@ -863,7 +863,7 @@ export function addProducts(req, res) {
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -878,7 +878,7 @@ export function addProducts(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -890,7 +890,7 @@ export function addProducts(req, res) {
           {
             "_id": 7,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr2",
             "fullname": null,
@@ -905,7 +905,7 @@ export function addProducts(req, res) {
             "permits": [
               {
                 "_id": 41,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 7,
                 "permitId": 67,
                 "roleId": 13,
@@ -917,7 +917,7 @@ export function addProducts(req, res) {
         ]}
       }
  */
-export function getProduct(req, res) {
+export function getSaleList(req, res) {
   var id, spaceId;
   if (req.params.id) {
     id = req.params.id;
@@ -927,12 +927,12 @@ export function getProduct(req, res) {
   }
 
   if (!isNaN(id) && id > 0) {
-    return Product.getProduct(id)
+    return SaleList.getSaleList(id)
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
   } else if (id && spaceId) {
-    return Product.getProduct({
+    return SaleList.getSaleList({
       name: id,
       spaceId: spaceId
     })
@@ -945,19 +945,19 @@ export function getProduct(req, res) {
 }
 
 /**
- * @desc {GET http://hostname/api/products?spaceId=xxx}
+ * @desc {GET http://hostname/api/saleLists?spaceId=xxx}
  * 这个函数用来获取产品的数组。通常提供spaceId来获取机构的所有产品，
  * @param {integer} req.query.spaceId
  * @return {json} json object array for type
  * @example
  * GET
- * http://hostname/api/products?spaceId=2
+ * http://hostname/api/saleLists?spaceId=2
  * @example
  * json result example
       [{
         "_id": 2,
         "parentId": -1,
-        "name": "product1",
+        "name": "saleList1",
         "fullname": null,
         "alias": null,
         "description": null,
@@ -971,7 +971,7 @@ export function getProduct(req, res) {
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -986,7 +986,7 @@ export function getProduct(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -998,7 +998,7 @@ export function getProduct(req, res) {
           {
             "_id": 7,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr2",
             "fullname": null,
@@ -1013,7 +1013,7 @@ export function getProduct(req, res) {
             "permits": [
               {
                 "_id": 41,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 7,
                 "permitId": 67,
                 "roleId": 13,
@@ -1026,9 +1026,9 @@ export function getProduct(req, res) {
       },
       ...]
  */
-export function getProducts(req, res) {
+export function getSaleLists(req, res) {
   if (req.query && req.query.spaceId) {
-    return Product.getProducts(req.query)
+    return SaleList.getSaleLists(req.query)
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
@@ -1038,27 +1038,27 @@ export function getProducts(req, res) {
 }
 
 /**
- * @desc {PUT http://hostname/api/products/:id}
+ * @desc {PUT http://hostname/api/saleLists/:id}
  * 这个函数用来更新产品。
- * @param {object} req.body product data for updating
+ * @param {object} req.body saleList data for updating
  * @param {integer} req.params.id 属性的id
- * @return {json} json object for new product
+ * @return {json} json object for new saleList
  * @example
  * PUT
- * http://hostname/api/products/5
+ * http://hostname/api/saleLists/5
  * req.body example:
       {
-          "name": "product_update_1",
-          "alias": "product_update_1 alias",
+          "name": "saleList_update_1",
+          "alias": "saleList_update_1 alias",
       }
  * @example
  * json result example
       {
         "_id": 2,
         "parentId": -1,
-        "name": "product_update_1",
+        "name": "saleList_update_1",
         "fullname": null,
-        "alias": "product_update_1 alias",
+        "alias": "saleList_update_1 alias",
         "description": null,
         "data": null,
         "spaceId": 1,
@@ -1070,7 +1070,7 @@ export function getProducts(req, res) {
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -1085,7 +1085,7 @@ export function getProducts(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -1097,7 +1097,7 @@ export function getProducts(req, res) {
           {
             "_id": 7,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr2",
             "fullname": null,
@@ -1112,7 +1112,7 @@ export function getProducts(req, res) {
             "permits": [
               {
                 "_id": 41,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 7,
                 "permitId": 67,
                 "roleId": 13,
@@ -1124,51 +1124,51 @@ export function getProducts(req, res) {
         ]}
       }
  */
-export function updateProduct(req, res) {
+export function updateSaleList(req, res) {
   var id = req.params.id;
   var body = req.body;
 
-  return Product.updateProduct(req.body, req.params.id)
+  return SaleList.updateSaleList(req.body, req.params.id)
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
 /**
- * @desc {DELETE http://hostname/api/products/:id}
+ * @desc {DELETE http://hostname/api/saleLists/:id}
  * 这个函数用来删除产品。
  * @param {object} req.params.id 
  * @return {result} return true after deleted, otherwise return false
  * @example
  * DELETE
- * http://hostname/api/products/5
+ * http://hostname/api/saleLists/5
  * 
  */
-export function deleteProduct(req, res) {
-  Product.findById(req.params.id)
+export function deleteSaleList(req, res) {
+  SaleList.findById(req.params.id)
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));
 }
 
 /**
- * @desc {POST http://hostname/api/products/attributes[?owner=xxx&ownerId=xxx]}
+ * @desc {POST http://hostname/api/saleLists/attributes[?owner=xxx&ownerId=xxx]}
  * 这个函数用来创建产品或者type的attribute。函数首先会在数据库中查找，如果发现已经存在，不会操作。
  * 如果没有发现类型，就进行创建。输入中必须包含owner的信息。如果没有在req.body里面提供owner, 则需要在req.query
  * 里面提供
- * @param {object} req.body product data for add new attribute
+ * @param {object} req.body saleList data for add new attribute
  * @return {json} json object for new attribute
  * @example
  * POST
- * http://hostname/api/products/attributes[?owner=Product&ownerId=3]
+ * http://hostname/api/saleLists/attributes[?owner=SaleList&ownerId=3]
  * or
- * http://hostname/api/products/attributes[?owner=ProductType&ownerId=2]
+ * http://hostname/api/saleLists/attributes[?owner=SaleListType&ownerId=2]
  * req.body example:
       {
           "name": "attribute1",
           "value": "value1
-          "alias": "product1 alias",
-          "owner": "Product",
+          "alias": "saleList1 alias",
+          "owner": "SaleList",
           "ownerId": 3,
           "grants": {
               "manager": "allow.input",
@@ -1180,7 +1180,7 @@ export function deleteProduct(req, res) {
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "Product",
+            "owner": "SaleList",
             "ownerId": 2,
             "name": "attribute1",
             "fullname": null,
@@ -1195,7 +1195,7 @@ export function deleteProduct(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -1213,7 +1213,7 @@ export function addAttribute(req, res) {
     return res.status(500).send('please provide owner,ownerId,spaceId in query');
   }
 
-  return ProductAttribute.addAttribute(
+  return SaleListAttribute.addAttribute(
     req.body,
     {
       spaceId: query.spaceId,
@@ -1225,7 +1225,7 @@ export function addAttribute(req, res) {
 }
 
 /**
- * @desc {POST http://hostname/api/products/attributes/batch[?owner=xxx&ownerId=xxx]}
+ * @desc {POST http://hostname/api/saleLists/attributes/batch[?owner=xxx&ownerId=xxx]}
  * 这个函数用来批量创建产品或者type的attribute。函数首先会在数据库中查找，如果发现已经存在，不会操作。
  * 如果没有发现类型，就进行创建。输入中必须包含owner的信息。如果没有在req.body里面提供owner, 则需要在req.query
  * 里面提供
@@ -1233,15 +1233,15 @@ export function addAttribute(req, res) {
  * @return {json} array of json object for new attribute
  * @example
  * POST
- * http://hostname/api/products/attributes/batch[?owner=Product&ownerId=3]
+ * http://hostname/api/saleLists/attributes/batch[?owner=SaleList&ownerId=3]
  * or
- * http://hostname/api/products/attributes/batch[?owner=ProductType&ownerId=2]
+ * http://hostname/api/saleLists/attributes/batch[?owner=SaleListType&ownerId=2]
  * req.body example:
       [{
           "name": "attribute1",
           "value": "value1
-          "alias": "product1 alias",
-          "owner": "Product",
+          "alias": "saleList1 alias",
+          "owner": "SaleList",
           "ownerId": 3,
           "grants": {
               "manager": "allow.input",
@@ -1253,7 +1253,7 @@ export function addAttribute(req, res) {
           [{
             "_id": 6,
             "parentId": -1,
-            "owner": "Product",
+            "owner": "SaleList",
             "ownerId": 2,
             "name": "attribute1",
             "fullname": null,
@@ -1268,7 +1268,7 @@ export function addAttribute(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -1286,29 +1286,29 @@ export function addAttributes(req, res) {
     return res.status(500).send('please provide owner,ownerId,spaceId in query');
   }
 
-  return ProductAttributes.addAttributes(req.body, { spaceId: req.query.spaceId })
+  return SaleListAttributes.addAttributes(req.body, { spaceId: req.query.spaceId })
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
 /**
- * @desc {GET http://hostname/api/products/attributes/:id[?owner=xxx&ownerId=xxx]}
+ * @desc {GET http://hostname/api/saleLists/attributes/:id[?owner=xxx&ownerId=xxx]}
  * 这个函数用来获取某一个属性。如果:id是integer，用id获取属性.如果:id是name,同时提供owner,ownerId，
  * 也可以用name来获取属性
  * @param {integer or string} req.params.id[req.query.owner,req.query.ownerId]
  * @return {json} json object for attribute
  * @example
  * GET
- * http://hostname/api/products/attributes/5
+ * http://hostname/api/saleLists/attributes/5
  * or
- * http://hostname/api/products/attributes/attr1?owner=Product&ownerId=2
+ * http://hostname/api/saleLists/attributes/attr1?owner=SaleList&ownerId=2
  * type1 is name of type
  * @example
  * json result example
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "Product",
+            "owner": "SaleList",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -1323,7 +1323,7 @@ export function addAttributes(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -1346,12 +1346,12 @@ export function getAttribute(req, res) {
   }
 
   if (!isNaN(id) && id > 0) {
-    return ProductAttribute.getAttribute(id)
+    return SaleListAttribute.getAttribute(id)
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
   } else if (id && owner && ownerId) {
-    return ProductAttribute.getAttribute({
+    return SaleListAttribute.getAttribute({
       name: id,
       owner: owner,
       ownerId: ownerId
@@ -1365,20 +1365,20 @@ export function getAttribute(req, res) {
 }
 
 /**
- * @desc {GET http://hostname/api/products/attributes/[?owner=xxx&ownerId=xxx]}
+ * @desc {GET http://hostname/api/saleLists/attributes/[?owner=xxx&ownerId=xxx]}
  * 这个函数用来获取某一个属性。如果:id是integer，用id获取属性.如果:id是name,同时提供owner,ownerId，
  * 也可以用name来获取属性
  * @param {integer or string} req.params.id[req.query.owner,req.query.ownerId]
  * @return {json} json object for attribute
  * @example
  * GET
- * http://hostname/api/products/attributes?owner=Product&ownerId=2
+ * http://hostname/api/saleLists/attributes?owner=SaleList&ownerId=2
  * @example
  * json result example
           [{
             "_id": 6,
             "parentId": -1,
-            "owner": "Product",
+            "owner": "SaleList",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -1393,7 +1393,7 @@ export function getAttribute(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -1405,7 +1405,7 @@ export function getAttribute(req, res) {
  */
 export function getAttributes(req, res) {
   if (req.query && req.query.owner && req.query.ownerId) {
-    return ProductAttribute.getAttributes(req.query)
+    return SaleListAttribute.getAttributes(req.query)
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
@@ -1415,14 +1415,14 @@ export function getAttributes(req, res) {
 }
 
 /**
- * @desc {PUT http://hostname/api/products/attributes/:id}
+ * @desc {PUT http://hostname/api/saleLists/attributes/:id}
  * 这个函数用来更新属性。
  * @param {object} req.body attribute data for updating
  * @param {integer} req.params.id 属性的id
  * @return {json} json object for new attribute
  * @example
  * PUT
- * http://hostname/api/products/attributes/:id
+ * http://hostname/api/saleLists/attributes/:id
  * req.body example:
       {
           "value": "attribute_update_1"
@@ -1432,7 +1432,7 @@ export function getAttributes(req, res) {
           {
             "_id": 6,
             "parentId": -1,
-            "owner": "ProductType",
+            "owner": "SaleListType",
             "ownerId": 2,
             "name": "attr1",
             "fullname": null,
@@ -1447,7 +1447,7 @@ export function getAttributes(req, res) {
             "permits": [
               {
                 "_id": 40,
-                "owner": "ProductAttribute",
+                "owner": "SaleListAttribute",
                 "ownerId": 6,
                 "permitId": 64,
                 "roleId": 5,
@@ -1461,24 +1461,24 @@ export function updateAttribute(req, res) {
   var id = req.params.id;
   var body = req.body;
 
-  return ProductAttribute.updateAttribute(req.body, req.params.id)
+  return SaleListAttribute.updateAttribute(req.body, req.params.id)
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
 /**
- * @desc {DELETE http://hostname/api/products/attributes/:id}
+ * @desc {DELETE http://hostname/api/saleLists/attributes/:id}
  * 这个函数用来删除属性。
  * @param {object} req.params.id 
  * @return {result} return true after deleted, otherwise return false
  * @example
  * DELETE
- * http://hostname/api/products/attributes/5
+ * http://hostname/api/saleLists/attributes/5
  * 
  */
 export function deleteAttribute(req, res) {
-  ProductAttribute.findById(req.params.id)
+  SaleListAttribute.findById(req.params.id)
     .then(function(entity){
       return Promise.resolve(entity);
     })

@@ -10,9 +10,9 @@
 'use strict';
 
 import _ from 'lodash';
-import { ProductType } from '../../sqldb';
-import { Product } from '../../sqldb';
-import { ProductAttribute } from '../../sqldb';
+import { SaleListType } from '../../sqldb';
+import { SaleList } from '../../sqldb';
+import { SaleListAttribute } from '../../sqldb';
 var Promise = require('bluebird');
 
 
@@ -161,19 +161,15 @@ function handleError(res, statusCode) {
         ]
       }
  */
-export function addType(req, res) {
+export function addSaleListType(req, res) {
   var query = req.query;
   var body = req.body;
 
-  if (!query.spaceId && !body.spaceId) {
-    return res.status(500).send('please provide spaceId!');
+  if (!query.spaceId) {
+    return res.status(500).send('please provide spaceId in query');
   }
 
-  if(query.spaceId){
-    req.body.spaceId = query.spaceId;
-  }
-
-  return ProductType.addType(req.body)
+  return ProductType.addType(req.body, { spaceId: query.spaceId })
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
@@ -298,7 +294,7 @@ export function addType(req, res) {
       ....
       ]
  */
-export function addTypes(req, res) {
+export function addSaleListTypes(req, res) {
   var query = req.query;
   var body = req.body;
 
@@ -306,22 +302,22 @@ export function addTypes(req, res) {
     return res.status(500).send('please provide spaceId in query');
   }
 
-  return ProductType.addTypes(req.body, { spaceId: req.query.spaceId })
+  return SaleListType.addTypes(req.body, { spaceId: req.query.spaceId })
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
 /**
- * @desc {GET http://hostname/api/products/types/:id[?spaceId=xxx]}
+ * @desc {GET http://hostname/api/sales/saleLists/types/:id[?spaceId=xxx]}
  * 这个函数用来获取某一个类型。如果:id是integer，用id获取type.如果:id是name,同时提供spaceId，
  * 也可以用typename来获取type
  * @param {integer or string} req.params.id[req.query.spaceId]
  * @return {json} json object for type
  * @example
  * GET
- * http://hostname/api/products/types/5
+ * http://hostname/api/sales/saleLists/types/5
  * or
- * http://hostname/api/products/types/type1?spaceId=2
+ * http://hostname/api/sales/saleLists/types/type1?spaceId=2
  * type1 is name of type
  * @example
  * json result example
@@ -394,7 +390,7 @@ export function addTypes(req, res) {
         ]
       }
  */
-export function getType(req, res) {
+export function getSaleListType(req, res) {
   var id, spaceId;
   if (req.params.id) {
     id = req.params.id;
@@ -404,12 +400,12 @@ export function getType(req, res) {
   }
 
   if (!isNaN(id) && id > 0) {
-    return ProductType.getType(id)
+    return SaleListType.getType(id)
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
   } else if (id && spaceId) {
-    return ProductType.getType({
+    return SaleListType.getType({
       name: id,
       spaceId: spaceId
     })
@@ -422,13 +418,13 @@ export function getType(req, res) {
 }
 
 /**
- * @desc {GET http://hostname/api/products/types?spaceId=xxx}
+ * @desc {GET http://hostname/api/sales/saleLists/types?spaceId=xxx}
  * 这个函数用来获取类型的数组。通常提供spaceId来获取机构的所有类型，
  * @param {integer} req.query.spaceId
  * @return {json} json object array for type
  * @example
  * GET
- * http://hostname/api/products/types?spaceId=2
+ * http://hostname/api/sales/saleLists/types?spaceId=2
  * @example
  * json result example
       [{
@@ -501,9 +497,9 @@ export function getType(req, res) {
       },
       ...]
  */
-export function getTypes(req, res) {
+export function getSaleListTypes(req, res) {
   if (req.query && req.query.spaceId) {
-    return ProductType.getTypes(req.query)
+    return SaleListType.getTypes(req.query)
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
@@ -513,14 +509,14 @@ export function getTypes(req, res) {
 }
 
 /**
- * @desc {PUT http://hostname/api/products/types/:id}
+ * @desc {PUT http://hostname/api/sales/saleLists/types/:id}
  * 这个函数用来更新产品类型。
  * @param {object} req.body type data for updating
  * @param {integer} req.params.id 属性的id
  * @return {json} json object for new type
  * @example
  * PUT
- * http://hostname/api/products/types/5
+ * http://hostname/api/sales/saleLists/types/5
  * req.body example:
       {
           "name": "type2",
@@ -617,15 +613,15 @@ export function updateType(req, res) {
  * http://hostname/api/products/types/5
  * 
  */
-export function deleteType(req, res) {
-  ProductType.findById(req.params.id)
+export function deleteSaleListType(req, res) {
+  SaleListType.findById(req.params.id)
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));
 }
 
 /**
- * @desc {POST http://hostname/api/products}
+ * @desc {POST http://hostname/api/sales/saleLists}
  * 这个函数用来创建新的产品。函数首先会在数据库中查找，如果发现已经存在，不会操作。
  * 如果没有发现类型，就进行创建
  * @param {object} req.body product data for add new product
@@ -727,7 +723,7 @@ export function deleteType(req, res) {
         }
       }
  */
-export function addProduct(req, res) {
+export function addSaleList(req, res) {
   var query = req.query;
   var body = req.body;
 
@@ -735,7 +731,7 @@ export function addProduct(req, res) {
     return res.status(500).send('please provide spaceId in query');
   }
 
-  return Product.addProduct(req.body, { spaceId: query.spaceId })
+  return SaleList.addSaleList(req.body, { spaceId: query.spaceId })
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
@@ -917,7 +913,7 @@ export function addProducts(req, res) {
         ]}
       }
  */
-export function getProduct(req, res) {
+export function getSaleListProduct(req, res) {
   var id, spaceId;
   if (req.params.id) {
     id = req.params.id;
@@ -927,12 +923,12 @@ export function getProduct(req, res) {
   }
 
   if (!isNaN(id) && id > 0) {
-    return Product.getProduct(id)
+    return SaleList.getSaleList(id)
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
   } else if (id && spaceId) {
-    return Product.getProduct({
+    return SaleList.getSaleList({
       name: id,
       spaceId: spaceId
     })
@@ -1026,9 +1022,9 @@ export function getProduct(req, res) {
       },
       ...]
  */
-export function getProducts(req, res) {
+export function getSaleLists(req, res) {
   if (req.query && req.query.spaceId) {
-    return Product.getProducts(req.query)
+    return SaleList.getSaleLists(req.query)
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
@@ -1124,11 +1120,11 @@ export function getProducts(req, res) {
         ]}
       }
  */
-export function updateProduct(req, res) {
+export function updateSaleList(req, res) {
   var id = req.params.id;
   var body = req.body;
 
-  return Product.updateProduct(req.body, req.params.id)
+  return SaleList.updateSaleList(req.body, req.params.id)
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
@@ -1144,8 +1140,8 @@ export function updateProduct(req, res) {
  * http://hostname/api/products/5
  * 
  */
-export function deleteProduct(req, res) {
-  Product.findById(req.params.id)
+export function deleteSaleList(req, res) {
+  SaleList.findById(req.params.id)
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));
@@ -1205,7 +1201,7 @@ export function deleteProduct(req, res) {
             ]
           }      
  */
-export function addAttribute(req, res) {
+export function addSaleListAttribute(req, res) {
   var query = req.query;
   var body = req.body;
 
@@ -1213,7 +1209,7 @@ export function addAttribute(req, res) {
     return res.status(500).send('please provide owner,ownerId,spaceId in query');
   }
 
-  return ProductAttribute.addAttribute(
+  return SaleListAttribute.addAttribute(
     req.body,
     {
       spaceId: query.spaceId,
@@ -1286,7 +1282,7 @@ export function addAttributes(req, res) {
     return res.status(500).send('please provide owner,ownerId,spaceId in query');
   }
 
-  return ProductAttributes.addAttributes(req.body, { spaceId: req.query.spaceId })
+  return SaleListAttributes.addAttributes(req.body, { spaceId: req.query.spaceId })
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
@@ -1333,7 +1329,7 @@ export function addAttributes(req, res) {
             ]
           }
  */
-export function getAttribute(req, res) {
+export function getSaleListAttribute(req, res) {
   var id, owner,ownerId;
   if (req.params.id) {
     id = req.params.id;
@@ -1346,12 +1342,12 @@ export function getAttribute(req, res) {
   }
 
   if (!isNaN(id) && id > 0) {
-    return ProductAttribute.getAttribute(id)
+    return SaleListAttribute.getAttribute(id)
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
   } else if (id && owner && ownerId) {
-    return ProductAttribute.getAttribute({
+    return SaleListAttribute.getAttribute({
       name: id,
       owner: owner,
       ownerId: ownerId
@@ -1403,9 +1399,9 @@ export function getAttribute(req, res) {
             ]
           },...]
  */
-export function getAttributes(req, res) {
+export function getSaleListAttributes(req, res) {
   if (req.query && req.query.owner && req.query.ownerId) {
-    return ProductAttribute.getAttributes(req.query)
+    return SaleListAttribute.getAttributes(req.query)
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
       .catch(handleError(res));
@@ -1457,11 +1453,11 @@ export function getAttributes(req, res) {
             ]
           }
  */
-export function updateAttribute(req, res) {
+export function updateSaleListAttribute(req, res) {
   var id = req.params.id;
   var body = req.body;
 
-  return ProductAttribute.updateAttribute(req.body, req.params.id)
+  return SaleListAttribute.updateAttribute(req.body, req.params.id)
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
@@ -1477,8 +1473,8 @@ export function updateAttribute(req, res) {
  * http://hostname/api/products/attributes/5
  * 
  */
-export function deleteAttribute(req, res) {
-  ProductAttribute.findById(req.params.id)
+export function deleteSaleListAttribute(req, res) {
+  SaleListAttribute.findById(req.params.id)
     .then(function(entity){
       return Promise.resolve(entity);
     })
