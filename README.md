@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 # billyn property
 >>>>>>> 7df0ed2638c621c7583aafa48a6cff2cc2cb5c58
@@ -29,3 +30,6 @@ Run `grunt build` for building and `grunt serve` for preview.
 ## Testing
 
 Running `npm test` will run the unit tests with karma.
+=======
+#MyCube
+>>>>>>> 5bc39e6a28bf483a462a01d3cd8ec0abe581fbeb

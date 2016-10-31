@@ -9,7 +9,7 @@ angular.module('billynApp.core')
                 templateUrl: 'components/blyn/core/dash/view/listMessage.html',
                 controller: 'ListMessageController',
                 controllerAs: 'listMessage',
-                ncyBreadcrumb: { skip: true },
+                ncyBreadcrumb: {label:'个人空间'},
                 authenticate: true
             })
             .state('pc.createSpace', {

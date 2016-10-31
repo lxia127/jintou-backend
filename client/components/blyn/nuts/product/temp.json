@@ -1,0 +1,12 @@
+{
+    "name": "mycube.jiayouzhuan",
+    "alias": "我立方加油赚",
+    "description": "我立方加油赚产品",
+    "typeId": 2,
+    "smallPicUrl": "",
+    "picUrl": "",
+    "attributs": {
+        "location":"",
+        "expire":""
+    }
+}

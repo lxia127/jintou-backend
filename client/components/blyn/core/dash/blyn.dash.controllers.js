@@ -39,6 +39,10 @@
             this.currentSpace = {
                 _id: '', name: '', desc: ''
             };
+            setTimeout(function(){
+              $("#listImg").attr("src", $("#navImg").attr('src'));
+            },1000);
+
         }
 
         exitSpace() {
@@ -76,7 +80,7 @@
             ];*/
 
             var that = this;
-            BSpace.getConfig().then(function (config) {
+            BSpace.loadConfig().then(function (config) {
                 that.spaceTypes = config.types;
             })
         }

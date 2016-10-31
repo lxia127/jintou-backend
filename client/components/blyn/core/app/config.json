@@ -116,6 +116,19 @@
 			"nuts": {
 				"product": {
 					"grants": {
+						"admin": "admin|产品设置",
+						"member": "manage|产品管理",
+						"client": "client|产品服务"
+					}
+				}				
+			}
+		},
+		"weTrade": {
+			"alias": "机构交易",
+			"type": "app.normal",
+			"nuts": {
+				"sale": {
+					"grants": {
 						"admin": "admin",
 						"member": "manage",
 						"client": "client"
@@ -126,27 +139,14 @@
 						"admin": "admin",
 						"member": "manage"
 					}
-				}
-			}
-		},
-		"weTrade": {
-			"alias": "机构交易",
-			"type": "app.normal",
-			"nuts": {
-				"order": {
-					"grants": {
-						"admin": "admin",
-						"manage": "manage",
-						"client": "client"
-					}
 				},
-				"trade": {
+				"profit": {
 					"grants": {
 						"admin": "admin",
 						"member": "manage",
 						"client": "client"
 					}
-				}
+				}			
 			}
 		}		
 	}

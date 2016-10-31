@@ -5,9 +5,8 @@ var controller = require('./wechat.controller');
 
 var router = express.Router();
 
-
-router.get('/wechatOauthRedirect', controller.wechatOauthRedirect);
-router.get('/wechatLogin', controller.wechatLogin);
+router.get('/wechatOauth',controller.wechatOauthRedirect);
+router.get('/wechatLogin',controller.wechatLogin);
 router.get('/', controller.index);
 router.get('/:id', controller.show);
 router.post('/', controller.create);

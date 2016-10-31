@@ -1,0 +1,14 @@
+{
+    "type":"nut.core",
+	"permits": {
+		"admin": {
+			"alias": "admin profit stuff"
+		},
+		"manage": {
+			"alias": "manage profit stuff"
+		},
+		"client": {
+			"alias": "money profit for client"
+		}
+	}
+}

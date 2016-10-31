@@ -2,123 +2,48 @@
 
 (function () {
 
-    function BMoney($resource, User, $q, Util, $rootScope,$http) {
+    function BProduct($resource, $q, Util, $rootScope, $http, $stateParams) {
         var safeCb = Util.safeCb;
         var current = {};
-        var resUser = $resource('/api/money/:id/:controller', {
+        var resProduct = $resource('/api/products/:id/:controller', {
             id: '@_id'
         }, {
-                create: {
-                    method: 'POST'
-                },
-                changePassword: {
-                    method: 'PUT',
-                    params: {
-                        controller: 'password'
-                    }
-                },
-                me: {
-                    method: 'GET',
-                    params: {
-                        controller: 'me'
-                    }
-                }
-            });
 
-        var resSpace = $resource('/api/spaces/:id/:controller', {
-            id: '@_id'
-        }, {
-                getUserSpaces: {
-                    method: 'GET',
-                    isArray: true,
-                    params: {
-                        controller: 'user'
-                    }
-                },
             });
-        var resUserProfile = $resource('/api/user/profiles/:id/:controller', {
-            id: '@_id'
-        }, {
-                bulkAdd: {
-                    method: 'POST',
-                    isArray: true,
-                    params: {
-                        id: 'bulk'
-                    }
-                }
-            });
-
-        var resUserGroup = $resource('/api/users/groups/:id/:controller', {
-            id: '@_id'
-        }, {
-                add: {
-                    method: 'POST'
-                },
-                findOne: {
-                    method: 'GET'
-                },
-                findAll: {
-                    method: 'GET',
-                    isArray: true
-                },
-                findRoles: {
-                    method: 'GET',
-                    isArray: true,
-                    params: {
-                        id: 'roles'
-                    }
-                },
-                addRole: {
-                    method: 'POST',
-                    params: {
-                        id: 'roles'
-                    }
-                }
-            });
-
-        var currentUser = {};
 
         var service = {};
+
+        service.addProduct = function (productData) {
+            //将会执行POST http://.../api/products/
+            return resProduct.create(productData).$promise;
+        }
+
+        service.loadConfig = function (path) {
+            var that = this;
+            path = path || "components/blyn/nuts/product/config.json"
+            return $http.get(path).then(function (oConfig) {
+                current.config = oConfig.data;
+
+                return $q.when(current.config);
+
+            })
+        }
 
         service.setCurrent = function (user) {
             //return currentUser = user;
             var that = this;
             return this.loadConfig()
                 .then(function () {
-                    return that.loadMe();
-                })
-                .then(function () {
-                    return that.loadMySpaces()
-                }).then(function(){
-                    return $q.when(current);
-                })
-        }
-
-        //return promise
-        service.loadMe = function () {
-            return resUser.me().$promise.then(function (user) {
-                current = user;
-                $rootScope.current.user = user;
-                return $q.when(user);
-            });
-        }
-
-        //return promise
-        service.loadMySpaces = function () {
-            return resSpace.getUserSpaces().$promise.then(function (spaces) {
-                current.spaces = spaces;
-                var space = spaces[0];
-                $rootScope.current.space = spaces[0];
-                var apps = space.apps;
-                apps.forEach(function (app) {
-                    if (app.name.toLocaleLowerCase() === 'appengine') {
-                        $rootScope.current.app = app;
+                    if ($StateParams.productId) {
+                        return resProduct.get({
+                            id: $StateParams.productId
+                        }).$promise;
+                    } else {
+                        return $q.when(null);
                     }
-                })
-
-                return $q.when(spaces);
-            })
+                });
         }
+
 
         service.getCurrent = function () {
             return current;
@@ -215,7 +140,7 @@
             }
         }
 
-        service.loadConfig = function () {
+        service.loadConfig = function (path) {
             var that = this;
             return $http.get("components/blyn/core/user/config.json").then(function (oConfig) {
                 current.config = oConfig.data;
@@ -248,7 +173,7 @@
     }
 
     angular.module('billynApp.core')
-        .factory('BMoney', BMoney);
+        .factory('BProduct', BProduct);
 
 })();
 

@@ -1,0 +1,18 @@
+ <div class="col-sm-10 b-r">
+  <form role="form">
+    <div class="form-group"><label>充值卡卡号</label>
+      <input ng-model="" type="text" placeholder="充值卡卡号" class="form-control"></div>
+    <div class="form-group"><label>充值卡卡名</label>
+      <input ng-model="" type="text" placeholder="充值卡卡名" class="form-control"></div>                        
+    <div class="form-group">
+        <label>充值卡状态 :</label>
+        <select ng-model="" class="form-control" required>
+            <option value="">active</option>
+            <option value="">pending</option>
+        </select>
+    </div>
+    <div>
+      <button class="btn btn-sm btn-primary pull-right m-t-n-xs" type="submit" ng-click="vm.addRole()"><strong>确认添加</strong></button>
+    </div>
+  </form>
+</div>
