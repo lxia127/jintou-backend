@@ -1,4 +1,4 @@
-// Generated on 2016-02-23 using generator-angular-fullstack 3.3.0
+//80 Generated on 2016-02-23 using generator-angular-fullstack 3.3.0
 'use strict';
 
 module.exports = function (grunt) {
@@ -647,7 +647,7 @@ module.exports = function (grunt) {
       'postcss',
       'express:dev',
       'wait',
-      'open',
+      //'open',
       'watch'
     ]);
   });
