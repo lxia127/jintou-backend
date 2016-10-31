@@ -9,6 +9,12 @@
         
     }
 
+    class WechatBindController{
+        constructor($state, $stateParams, $rootScope, BNut) {
+            var test = 'test';
+        }
+    }
+    
     class CircleHomeController {
         constructor($state, $stateParams, $rootScope, BNut, BCircle) {
             var ctrl = this;
@@ -611,16 +617,18 @@
     
 
     angular.module('billynApp.core')
-        .controller('CircleController', CircleController)
-        .controller('CircleHomeController', CircleHomeController)
-        .controller('AdminCircleController', AdminCircleController)
-        .controller('ManageCircleSpacesController', ManageCircleSpacesController)
-        .controller('ManageCircleController', ManageCircleController)
-        .controller('CircleMemberChiefController', CircleMemberChiefController)
-        .controller('ShareCollabController', ShareCollabController)
-        .controller('ListCircleCollabController', ListCircleCollabController)
-        .controller('JoinCircleCollabController', JoinCircleCollabController)
-        .controller('CircleMemberController', CircleMemberController)
-        .controller('CircleMemberSpacesController', CircleMemberSpacesController)
-        .controller('CreateCircleController', CreateCircleController);
+        // .controller('CircleController', CircleController)
+        // .controller('CircleHomeController', CircleHomeController)
+        // .controller('AdminCircleController', AdminCircleController)
+        // .controller('ManageCircleSpacesController', ManageCircleSpacesController)
+        // .controller('ManageCircleController', ManageCircleController)
+        // .controller('CircleMemberChiefController', CircleMemberChiefController)
+        // .controller('ShareCollabController', ShareCollabController)
+        // .controller('ListCircleCollabController', ListCircleCollabController)
+        // .controller('JoinCircleCollabController', JoinCircleCollabController)
+        // .controller('CircleMemberController', CircleMemberController)
+        // .controller('CircleMemberSpacesController', CircleMemberSpacesController)
+        // .controller('CreateCircleController', CreateCircleController)
+        .controller('WechatController', WechatController)      
+        .controller('WechatBindController', WechatBindController);
 })();

@@ -33,7 +33,7 @@ var translationsZH = {
     USERNAME: '用户名',
     IDENTIFIERS: "@:LOGIN_PAGE.IDENTIFIERS",
     PASSWORD: "@:LOGIN_PAGE.PASSWORD",
-    BINGUSER: '绑定',
+    BINDUSER: '绑定',
     BINDING: '绑 定 中',
     BACKTOLOGIN: "返回登录",
     BINDNEWUSER: "绑定新用户"
@@ -70,11 +70,11 @@ var translationsEN = {
     USERNAME: 'User Name',
     IDENTIFIERS: "@:LOGIN_PAGE.IDENTIFIERS",
     PASSWORD: "@:LOGIN_PAGE.PASSWORD",
-    BINGUSER: 'Bind',
+    BINDUSER: 'Bind',
     BINDING: 'Binding...',
     BACKTOLOGIN: "Back to Login",
     BINDNEWUSER: "Bind New User"
-  }，
+  },
   NUT: {
     space: "space",
     role: "role",
